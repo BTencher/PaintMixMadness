@@ -1,14 +1,12 @@
 extends "res://Characters/PersonTemplate.gd"
 
 # An enum allows us to keep track of valid states.
-enum States {EMPTY_HANDS, PICKING_UP_CAN, EMPTY_PAINT, USING_MACHINE, OPEN_PAINT, USING_HAMMER, CLOSE_PAINT}
+enum States {EMPTY_HANDS, CAN_PICK_UP, PICKING_UP_CAN, EMPTY_PAINT, CAN_USE_MACHINE, USING_MACHINE, OPEN_PAINT, CAN_USE_HAMMER, USING_HAMMER, CLOSE_PAINT}
+var _state : int = States.EMPTY_HANDS setget updateState
 
-# With a variable that keeps track of the current state, we don't need to add more booleans.
-var _state : int = States.EMPTY_HANDS
+var nearbyCubbies : Array = []
 
-var canPickUpCan : bool = false
-var canUseMachine : bool = false
-var canHammer : bool = false
+signal canInteractCubby(this_node, cubby_node)
 
 func _physics_process(delta) -> void:
 	var input_vector : Vector2 = Vector2.ZERO
@@ -16,7 +14,7 @@ func _physics_process(delta) -> void:
 	input_vector.y = Input.get_action_strength("ui_down") - Input.get_action_strength("ui_up")
 	input_vector = input_vector.normalized()
 	
-	if _state == States.EMPTY_HANDS and canPickUpCan and Input.is_action_just_pressed("move_up"):
+	if _state == States.CAN_PICK_UP and Input.is_action_just_pressed("interact"):
 		_state = States.PICKING_UP_CAN
 		
 	if _state == States.EMPTY_HANDS or _state == States.OPEN_PAINT:
@@ -29,3 +27,16 @@ func _physics_process(delta) -> void:
 			animationState.travel("Idle")
 			velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
 		velocity = move_and_slide(velocity)
+
+func updateState(new_state : int) -> void:
+	_state = new_state
+	if _state == States.CAN_PICK_UP:
+		pass
+
+func markCubbyNearby(cubbyID : StaticBody2D) -> void:
+	nearbyCubbies.append(cubbyID)
+	if nearbyCubbies.size() > 0 and _state == States.EMPTY_HANDS:
+		_state = States.CAN_PICK_UP
+		emit_signal("canInteractCubby",self,cubbyID)
+	elif not nearbyCubbies.size() == 0 and _state == States.CAN_PICK_UP:
+		_state = States.EMPTY_HANDS

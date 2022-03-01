@@ -1,10 +1,9 @@
 extends StaticBody2D
 
-
 onready var keyPressSprite : Sprite = $KeyPressSprite
 onready var keyPressAnimator : AnimationPlayer = $KeyPressAnimator
 
-signal checkBodyCanGrabPaint
+signal playerNearPaintCubby(body,this_node)
 
 var playersThatCanPress : Array = []
 
@@ -19,7 +18,8 @@ func _ready():
 
 
 func _on_InteractArea_body_entered(body):
-	emit_signal("checkBodyCanGrabPaint",body)
+	emit_signal("playerNearPaintCubby",body,self)
+
 	#Above signal is connected in Room Code, checks if body has a state of "Empty"
 	
 	#Commenting out as this will be done elsewhere after checking if user can grab
