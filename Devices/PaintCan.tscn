@@ -13,7 +13,6 @@ script = ExtResource( 2 )
 texture = ExtResource( 1 )
 
 [node name="PaintCanInside" type="Sprite" parent="."]
-modulate = Color( 0, 0, 0, 1 )
 texture = ExtResource( 4 )
 
 [node name="PaintCanBodyClose" type="Sprite" parent="."]
