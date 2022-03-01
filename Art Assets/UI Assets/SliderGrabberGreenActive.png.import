@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Worker.png-00c16f34f2601f8f5b8b0c62cfe21961.stex"
+path="res://.import/SliderGrabberGreenActive.png-33888831a42b47382e1a5673ce68e709.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Art Assets/Worker.png"
-dest_files=[ "res://.import/Worker.png-00c16f34f2601f8f5b8b0c62cfe21961.stex" ]
+source_file="res://Art Assets/UI Assets/SliderGrabberGreenActive.png"
+dest_files=[ "res://.import/SliderGrabberGreenActive.png-33888831a42b47382e1a5673ce68e709.stex" ]
 
 [params]
 

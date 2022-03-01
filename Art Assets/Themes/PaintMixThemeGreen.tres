@@ -1,0 +1,33 @@
+[gd_resource type="Theme" load_steps=6 format=2]
+
+[ext_resource path="res://Art Assets/fonts/3D-Thirteen-Pixel-Fonts.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://Art Assets/UI Assets/SliderGrabber.png" type="Texture" id=2]
+
+[sub_resource type="StyleBoxFlat" id=3]
+bg_color = Color( 0.670588, 0, 0, 1 )
+corner_radius_top_left = 20
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0.827451, 0, 0, 1 )
+corner_radius_top_left = 20
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 20
+
+[sub_resource type="DynamicFont" id=1]
+size = 26
+outline_size = 2
+outline_color = Color( 0, 0, 0, 1 )
+use_mipmaps = true
+font_data = ExtResource( 1 )
+
+[resource]
+default_font = SubResource( 1 )
+HSlider/icons/grabber = ExtResource( 2 )
+HSlider/icons/grabber_disabled = ExtResource( 2 )
+HSlider/icons/grabber_highlight = ExtResource( 2 )
+HSlider/styles/grabber_area = SubResource( 3 )
+HSlider/styles/grabber_area_highlight = SubResource( 2 )
