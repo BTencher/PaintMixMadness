@@ -13,7 +13,7 @@ func _ready():
 	keyPressSprite.visible = false
 
 func add_worker_to_nearby(worker_node : KinematicBody2D) -> void:
-	playersThatCanPress.append(worker_node) #Add Self to Make Setter Run
+	playersThatCanPress.append(worker_node)
 	update_key_press_sprite()
 
 func update_key_press_sprite() -> void:

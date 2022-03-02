@@ -20,3 +20,6 @@ usage = 0
 render_target_update_mode = 3
 
 [node name="Room" parent="GameWorld/GameWorldPort" instance=ExtResource( 1 )]
+
+[node name="Test" type="Position2D" parent="."]
+position = Vector2( 1127, 166 )

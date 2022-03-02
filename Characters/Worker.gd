@@ -27,7 +27,8 @@ signal disconnectFromCubbies(this_node, arrayNearbyCubbies)
 var nearbyPaintMachine : Array = []
 var currentMachineNode : Node2D
 signal canInteractPaintMachine(this_node, machine_node)
-signal disconnectFromPaintMachines(this_node, arrayNearbyMachines)
+#signal disconnectFromPaintMachines(this_node, arrayNearbyMachines) Not needed?
+signal interactWithPaintMachine(this_node, machine_node)
 
 
 func _physics_process(delta) -> void:
@@ -39,8 +40,11 @@ func _physics_process(delta) -> void:
 	if _state == States.CAN_PICK_UP and Input.is_action_just_pressed("interact"):
 		_state = States.PICKING_UP_CAN
 		pick_up_from_paint_cubby()
+	elif _state == States.CAN_USE_MACHINE and Input.is_action_just_pressed("interact"):
+		_state = States.USING_MACHINE
+		interact_with_paint_machine()
 		
-	if _state == States.EMPTY_HANDS or _state == States.OPEN_PAINT or _state == States.CAN_PICK_UP or _state == States.EMPTY_PAINT:
+	if _state == States.EMPTY_HANDS or _state == States.OPEN_PAINT or _state == States.CAN_PICK_UP or _state == States.EMPTY_PAINT or _state == States.CAN_USE_MACHINE or _state == States.OPEN_PAINT:
 		if input_vector != Vector2.ZERO:
 			animationTree.set("parameters/Idle/blend_position", input_vector)
 			animationTree.set("parameters/Walking/blend_position", input_vector)
@@ -90,27 +94,47 @@ func finish_picking_up_paint() -> void:
 func mark_cubby_nearby(cubbyID : StaticBody2D) -> void:
 	nearbyCubbies.append(cubbyID)
 	if nearbyCubbies.size() > 0 and _state == States.EMPTY_HANDS:
-		self._state = States.CAN_PICK_UP
+		_state = States.CAN_PICK_UP
 		emit_signal("canInteractCubby",self,cubbyID)
 		
 func mark_cubby_far(cubbyID : StaticBody2D) -> void:
 	nearbyCubbies.erase(cubbyID)
 	if nearbyCubbies.size() == 0 and _state == States.CAN_PICK_UP:
-		self._state = States.EMPTY_HANDS
+		_state = States.EMPTY_HANDS
 
 func mark_empty_machine_nearby(machine_id : Node2D) -> void:
 	nearbyPaintMachine.append(machine_id)
 	if nearbyPaintMachine.size() > 0 and _state == States.EMPTY_PAINT:
-		self._state = States.CAN_USE_MACHINE
+		_state = States.CAN_USE_MACHINE
 		emit_signal("canInteractPaintMachine",self,machine_id)
 
 func mark_loaded_machine_nearby(machine_id : Node2D) -> void:
 	nearbyPaintMachine.append(machine_id)
 	if nearbyPaintMachine.size() > 0 and _state == States.EMPTY_HANDS:
-		self._state = States.CAN_USE_MACHINE
+		_state = States.CAN_USE_MACHINE
 		emit_signal("canInteractPaintMachine",self,machine_id)
 		
 func mark_machine_far(machine_id : Node2D) -> void:
 	nearbyPaintMachine.erase(machine_id)
-	if nearbyPaintMachine.size() == 0 and _state == States.CAN_PICK_UP:
-		self._state = States.EMPTY_HANDS
+	if nearbyPaintMachine.size() == 0 and _state == States.CAN_USE_MACHINE:
+		_state = States.EMPTY_PAINT
+
+func interact_with_paint_machine() -> void:
+	_state = States.USING_MACHINE
+	currentMachineNode = nearbyPaintMachine[0] #Mark machine we are using
+	emit_signal("interactWithPaintMachine",self,currentMachineNode)
+	animationTree.active = false #make idle_up_right
+	animationPlayer.play("IdleUpRight") #maybe make a new animation. Do later
+
+func move_paint_can_to_machine(paintCanNode : Node2D) -> void:
+	var paintCan : Node2D = paintCanNode
+	paintCan.position = bucketPosition.position
+	add_child(paintCan)
+	currentBucketNode = paintCan
+	_state = States.OPEN_PAINT
+
+func release_worker_from_machine() -> void:
+	_state = States.EMPTY_HANDS
+	currentBucketNode = null
+	animationPlayer.stop()
+	animationTree.active = true
