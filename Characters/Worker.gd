@@ -24,6 +24,12 @@ var currentBucketNode : Node2D = null
 signal canInteractCubby(this_node, cubby_node)
 signal disconnectFromCubbies(this_node, arrayNearbyCubbies)
 
+var nearbyPaintMachine : Array = []
+var currentMachineNode : Node2D
+signal canInteractPaintMachine(this_node, machine_node)
+signal disconnectFromPaintMachines(this_node, arrayNearbyMachines)
+
+
 func _physics_process(delta) -> void:
 	var input_vector : Vector2 = Vector2.ZERO
 	input_vector.x = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
@@ -90,4 +96,21 @@ func mark_cubby_nearby(cubbyID : StaticBody2D) -> void:
 func mark_cubby_far(cubbyID : StaticBody2D) -> void:
 	nearbyCubbies.erase(cubbyID)
 	if nearbyCubbies.size() == 0 and _state == States.CAN_PICK_UP:
+		self._state = States.EMPTY_HANDS
+
+func mark_empty_machine_nearby(machine_id : Node2D) -> void:
+	nearbyPaintMachine.append(machine_id)
+	if nearbyPaintMachine.size() > 0 and _state == States.EMPTY_PAINT:
+		self._state = States.CAN_USE_MACHINE
+		emit_signal("canInteractPaintMachine",self,machine_id)
+
+func mark_loaded_machine_nearby(machine_id : Node2D) -> void:
+	nearbyPaintMachine.append(machine_id)
+	if nearbyPaintMachine.size() > 0 and _state == States.EMPTY_HANDS:
+		self._state = States.CAN_USE_MACHINE
+		emit_signal("canInteractPaintMachine",self,machine_id)
+		
+func mark_machine_far(machine_id : Node2D) -> void:
+	nearbyPaintMachine.erase(machine_id)
+	if nearbyPaintMachine.size() == 0 and _state == States.CAN_PICK_UP:
 		self._state = States.EMPTY_HANDS

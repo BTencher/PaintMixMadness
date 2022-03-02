@@ -63,7 +63,7 @@ tracks/1/keys = {
 "values": [ true ]
 }
 
-[node name="PaintMachine" type="Node2D"]
+[node name="PaintMachine" type="Node2D" groups=["PaintMachine"]]
 script = ExtResource( 2 )
 
 [node name="PaintMachineSprite" type="Sprite" parent="."]

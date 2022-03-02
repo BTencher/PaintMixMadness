@@ -2,10 +2,14 @@ extends Node2D
 
 onready var keyPressSprite : Sprite = $KeyPressSprite
 onready var keyPressAnimator : AnimationPlayer = $KeyPressAnimator
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
 
+signal playerNearEmptyMachine(body,this_node)
+signal playerNearLoadedMachine(body,this_node)
+signal playerFarFromPaintMachine(body,this_node)
+
+var playersThatCanPress : Array = []
+
+var currentPaintBucket : Node2D
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -18,9 +22,12 @@ func _ready():
 
 
 func _on_InteractArea_body_entered(body):
-	keyPressAnimator.play("KeyPress")
-
+	if currentPaintBucket:
+		emit_signal("playerNearLoadedMachine",body,self)
+	else:
+		emit_signal("playerNearEmptyMachine",body,self)
 
 func _on_InteractArea_body_exited(body):
+	emit_signal("playerFarFromPaintMachine",body,self)
 	keyPressSprite.visible = false
 	keyPressAnimator.stop()

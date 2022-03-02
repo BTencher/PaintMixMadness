@@ -18,6 +18,17 @@ func connect_paint_cubbies() -> void:
 		cubbyNode.connect("playerFarPaintCubby", self, "_mark_player_far_from_cubby")
 		cubbyCount += 1
 
+func connect_paint_machines() -> void:
+	var machineCount : int = 0
+	var paintMachineNodes : Array
+	paintMachineNodes = get_tree().get_nodes_in_group("PaintMachine")
+	while machineCount < paintMachineNodes.size():
+		var machineNode : Node2D = paintMachineNodes[machineCount]
+		machineNode.connect("playerNearEmptyMachine", self, "_mark_player_near_empty_machine")
+		machineNode.connect("playerNearLoadedMachine", self, "_mark_player_near_loaded_machine")
+		machineNode.connect("playerFarFromPaintMachine", self, "_mark_player_far_from_machine")
+		machineCount += 1
+
 func connect_workers() -> void:
 	var workerCount : int = 0
 	var workerNodes : Array
@@ -26,6 +37,8 @@ func connect_workers() -> void:
 		var workerNode : KinematicBody2D = workerNodes[workerCount]
 		workerNode.connect("canInteractCubby", self, "_mark_cubby_interactable")
 		workerNode.connect("disconnectFromCubbies", self, "_disconnect_from_cubbies")
+		workerNode.connect("canInteractPaintMachine", self, "_mark_cubby_interactable") #Make this function
+		#workerNode.connect("disconnectFromCubbies", self, "_disconnect_from_cubbies")
 		workerCount += 1
 
 func _mark_player_near_to_cubby(player_node : KinematicBody2D, cubby_node):
@@ -36,6 +49,18 @@ func _mark_player_far_from_cubby(player_node :KinematicBody2D, cubby_node):
 
 func _mark_cubby_interactable(player_node :KinematicBody2D, cubby_node):
 	cubby_node.add_worker_to_nearby(player_node)
+
+func _mark_player_near_empty_machine(player_node : KinematicBody2D, machine_node):
+	player_node.mark_empty_machine_nearby(machine_node)
+	
+func _mark_player_near_loaded_machine(player_node : KinematicBody2D, machine_node):
+	player_node.mark_cubby_nearby(machine_node)
+
+func _mark_player_far_from_machine(player_node :KinematicBody2D, machine_node):
+	player_node.mark_cubby_far(machine_node)
+
+func _mark_machine_interactable(player_node :KinematicBody2D, machine_node):
+	machine_node.add_worker_to_nearby(player_node)
 
 func _disconnect_from_cubbies(player_node : KinematicBody2D, cubby_array : Array):
 	if cubby_array.size() > 0:
