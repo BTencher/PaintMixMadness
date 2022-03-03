@@ -62,6 +62,7 @@ func move_filled_paint_can_from_machine_to_worker(worker_node : KinematicBody2D,
 			paintCanNode = child
 	machine_node.remove_child(paintCanNode)
 	worker_node.move_paint_can_from_machine_to_worker(paintCanNode)
+	machine_node.turn_off_machine()
 
 
 func move_empty_paint_can_from_worker_to_machine(worker_node : KinematicBody2D, machine_node : Node2D) -> void:
@@ -96,6 +97,7 @@ func _mark_player_far_from_machine(player_node :KinematicBody2D, machine_node):
 	player_node.mark_machine_far(machine_node)
 
 func _mark_machine_interactable(player_node :KinematicBody2D, machine_node):
+	print("EH?")
 	machine_node.add_worker_to_nearby(player_node)
 
 func _disconnect_from_cubbies(player_node : KinematicBody2D, cubby_array : Array):

@@ -44,24 +44,26 @@ func _physics_process(delta) -> void:
 		_state = States.USING_MACHINE
 		interact_with_paint_machine()
 		
-	if _state == States.EMPTY_HANDS or _state == States.OPEN_PAINT or _state == States.CAN_PICK_UP or _state == States.EMPTY_PAINT or _state == States.CAN_USE_MACHINE or _state == States.OPEN_PAINT:
-		if input_vector != Vector2.ZERO:
-			animationTree.set("parameters/Idle/blend_position", input_vector)
-			animationTree.set("parameters/Walking/blend_position", input_vector)
-			animationTree.set("parameters/IdleBucket/blend_position", input_vector)
-			animationTree.set("parameters/WalkingBucket/blend_position", input_vector)
-			if currentBucketNode:
-				animationState.travel("WalkingBucket")
+	#if _state == States.EMPTY_HANDS or _state == States.OPEN_PAINT or _state == States.CAN_PICK_UP or _state == States.EMPTY_PAINT or _state == States.CAN_USE_MACHINE or _state == States.OPEN_PAINT:
+	match _state:
+		States.EMPTY_HANDS,States.OPEN_PAINT,States.CAN_PICK_UP,States.EMPTY_PAINT,States.CAN_USE_MACHINE,States.OPEN_PAINT:
+			if input_vector != Vector2.ZERO:
+				animationTree.set("parameters/Idle/blend_position", input_vector)
+				animationTree.set("parameters/Walking/blend_position", input_vector)
+				animationTree.set("parameters/IdleBucket/blend_position", input_vector)
+				animationTree.set("parameters/WalkingBucket/blend_position", input_vector)
+				if currentBucketNode:
+					animationState.travel("WalkingBucket")
+				else:
+					animationState.travel("Walking")
+				velocity = velocity.move_toward(input_vector * MAX_SPEED, ACCELERATION * delta)
 			else:
-				animationState.travel("Walking")
-			velocity = velocity.move_toward(input_vector * MAX_SPEED, ACCELERATION * delta)
-		else:
-			if currentBucketNode:
-				animationState.travel("IdleBucket")
-			else:
-				animationState.travel("Idle")
-			velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
-		velocity = move_and_slide(velocity)
+				if currentBucketNode:
+					animationState.travel("IdleBucket")
+				else:
+					animationState.travel("Idle")
+				velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
+			velocity = move_and_slide(velocity)
 
 func pick_up_from_paint_cubby() -> void:
 	animationTree.active = false
@@ -72,7 +74,7 @@ func create_paint_can_child() -> void:
 	currentBucketNode = paintBucketScene
 	move_paint_can()
 	add_child(paintBucketScene)
-	emit_signal("disconnectFromCubbies",self,nearbyCubbies)
+	call_deferred("emit_signal", "disconnectFromCubbies", self, nearbyCubbies )
 	bring_paint_can_to_back()
 
 func move_paint_can() -> void:
@@ -125,7 +127,9 @@ func interact_with_paint_machine() -> void:
 	emit_signal("interactWithPaintMachine",self,currentMachineNode)
 	animationTree.active = false #make idle_up_right
 	animationPlayer.play("IdleUpRight") #maybe make a new animation. Do later
+	print("Stuck?")
 
+#This looks real wrong
 func move_paint_can_to_machine(paintCanNode : Node2D) -> void:
 	var paintCan : Node2D = paintCanNode
 	paintCan.position = bucketPosition.position
@@ -138,3 +142,13 @@ func release_worker_from_machine() -> void:
 	currentBucketNode = null
 	animationPlayer.stop()
 	animationTree.active = true
+
+func move_paint_can_from_machine_to_worker(paintCanNode : Node2D) -> void:
+	currentBucketNode = paintCanNode
+	add_child(paintCanNode)
+	call_deferred("emit_signal", "disconnectFromCubbies", self, nearbyCubbies )
+	bring_paint_can_to_back()
+	_state = States.OPEN_PAINT
+	animationPlayer.stop()
+	animationTree.active = true
+	print("HEre?")

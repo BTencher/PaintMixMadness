@@ -81,6 +81,9 @@ tile_data = PoolIntArray( -196602, 1, 0, -196601, 1, 0, -196600, 1, 0, -196599, 
 [node name="PaintMachine" parent="YSort" instance=ExtResource( 5 )]
 position = Vector2( 226, 90 )
 
+[node name="PaintMachine2" parent="YSort" instance=ExtResource( 5 )]
+position = Vector2( 175, 65 )
+
 [node name="BucketCubby" parent="YSort" instance=ExtResource( 6 )]
 position = Vector2( 85, 71 )
 

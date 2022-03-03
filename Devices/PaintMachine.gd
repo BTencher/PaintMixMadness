@@ -8,6 +8,7 @@ onready var paintSpittle : Particles2D = $PaintSpittle
 onready var goodProgress : TextureProgress = $GoodProgress
 onready var badProgress : TextureProgress = $BadProgress
 onready var textureTimer : Timer = $TextureTimer
+onready var interactArea : Area2D = $InteractArea
 
 
 signal playerNearEmptyMachine(body,this_node)
@@ -18,8 +19,10 @@ var playersThatCanPress : Array = []
 
 var currentPaintBucket : Node2D
 
-enum States {READY,RUNNING}
-var _state : int = States.READY
+var paintMachineColor : Color
+
+enum States {EMPTY,RUNNING,COMPLETED}
+var _state : int = States.EMPTY
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -52,11 +55,20 @@ func get_menu_location() -> Vector2:
 	return menuPosition.global_position
 
 func run_paint_machine(color : Color) -> void:
-	start_spewing_paint(color)
+	paintMachineColor = color
+	set_state_to_running()
+	start_spewing_paint(paintMachineColor)
 	start_texture_progress()
+	currentPaintBucket.set_end_paint_color(paintMachineColor)
+
+func set_state_to_running() -> void:
+	_state = States.RUNNING
+	interactArea.monitoring = false
+	
 
 func start_spewing_paint(color : Color) -> void:
 	paintSpittle.modulate = color
+	move_child(currentPaintBucket,1)
 	paintSpittle.emitting = true
 
 func start_texture_progress() -> void:
@@ -64,7 +76,13 @@ func start_texture_progress() -> void:
 	badProgress.value = 0
 	goodProgress.visible = true
 	textureTimer.start()
-	
+
+func turn_off_machine() -> void:
+	goodProgress.value = 0
+	badProgress.value = 0
+	goodProgress.visible = false
+	badProgress.visible = false
+	textureTimer.stop()
 
 func _on_InteractArea_body_entered(body):
 	if currentPaintBucket:
@@ -81,9 +99,12 @@ func _on_InteractArea_body_exited(body):
 func _on_TextureTimer_timeout():
 	if goodProgress.value < 100:
 		goodProgress.value += 1
+		currentPaintBucket.update_current_color(goodProgress.value)
 	elif badProgress.visible == false:
-		badProgress.visible == true
+		badProgress.visible = true
+		_state = States.COMPLETED #Paint Filled
+		interactArea.monitoring = true #Workers can now grab paint.
 	elif badProgress.value < 100:
-		goodProgress.value += 1
+		badProgress.value += 1
 	else:
 		pass #make bad stuff happen.

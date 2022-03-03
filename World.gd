@@ -7,10 +7,6 @@ onready var testPos : Position2D = $Test
 func _ready():
 	connect_room_signals()
 
-func _process(delta) -> void:
-	if Input.is_action_just_pressed("find_pos"):
-		pass
-
 func connect_room_signals():
 	room.connect("createPaintMachineUI", self, "_create_paint_machine_ui")
 

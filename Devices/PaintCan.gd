@@ -1,10 +1,10 @@
 extends Node2D
 
 
-# Declare member variables here. Examples:
-var redValue : int = 255 setget updateRed
-var blueValue : int = 255 setget updateBlue
-var greenValue : int = 255 setget updateGreen
+var paintEndColor : Color
+var startColor : Color = Color.white
+var temporary_color : Color = startColor
+
 var hasLid : bool = false setget closeLid
 var isFilled : bool = false
 
@@ -13,23 +13,24 @@ onready var paintCanBodyClose: Sprite = $PaintCanBodyClose
 onready var paintCanCloseLabel : Sprite = $PaintCanCloseLabel
 
 func _ready():
-	pass
+	update_paint_colors(temporary_color)
 
-func updateRed(new_value : int) -> void:
-	redValue = new_value
-	update_paint_colors()
+func set_end_paint_color(paintMachineColor : Color) -> void:
+	paintEndColor = paintMachineColor
 
-func updateBlue(new_value : int) -> void:
-	blueValue = new_value
-	update_paint_colors()
+func update_current_color(int_percent_complete : int) -> void:
+	if int_percent_complete < 100:
+		temporary_color = Color(lerp(startColor,paintEndColor,float(int_percent_complete)/100.00))#(startColor/255).linear_interpolate(paintEndColor/255,float(int_percent_complete)/100.00)
+		update_paint_colors(temporary_color)
+		print(temporary_color)
+	else:
+		temporary_color = paintEndColor
+		update_paint_colors(temporary_color)
+		print(temporary_color)
 
-func updateGreen(new_value : int) -> void:
-	greenValue = new_value
-	update_paint_colors()
-
-func update_paint_colors() -> void:
-	paintCanInside.modulate = Color( redValue, blueValue, greenValue, 1)
-	paintCanCloseLabel.modulate = Color( redValue, blueValue, greenValue, 1)
+func update_paint_colors(v_currentPaintColor : Color) -> void:
+	paintCanInside.modulate = v_currentPaintColor
+	paintCanCloseLabel.modulate = v_currentPaintColor
 
 func closeLid(new_value : bool) -> void:
 	hasLid = new_value
