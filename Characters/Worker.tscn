@@ -1,7 +1,8 @@
-[gd_scene load_steps=50 format=2]
+[gd_scene load_steps=65 format=2]
 
 [ext_resource path="res://Art Assets/Worker.png" type="Texture" id=1]
 [ext_resource path="res://Characters/Worker.gd" type="Script" id=2]
+[ext_resource path="res://Art Assets/CharacterShadow.png" type="Texture" id=3]
 
 [sub_resource type="CapsuleShape2D" id=3]
 radius = 7.99999
@@ -220,6 +221,149 @@ tracks/3/keys = {
 }, {
 "args": [  ],
 "method": "move_paint_can"
+} ]
+}
+
+[sub_resource type="Animation" id=53]
+resource_name = "HammerHighIdle"
+length = 0.1
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 49 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+
+[sub_resource type="Animation" id=51]
+resource_name = "HammerLiftDownRight"
+length = 0.6
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 45, 46, 47, 48, 49, 50 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/2/type = "method"
+tracks/2/path = NodePath("..")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0.6 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "ready_for_hammer_swing"
+} ]
+}
+
+[sub_resource type="Animation" id=50]
+resource_name = "HammerLowIdle"
+length = 0.1
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 45 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+
+[sub_resource type="Animation" id=52]
+resource_name = "HammerSlamDownRight"
+length = 0.25
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 49, 50, 51, 52, 53 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/2/type = "method"
+tracks/2/path = NodePath("..")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0.25 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "end_hammer_swing"
 } ]
 }
 
@@ -893,6 +1037,18 @@ tracks/3/keys = {
 } ]
 }
 
+[sub_resource type="AnimationNodeAnimation" id=56]
+animation = "HammerHighIdle"
+
+[sub_resource type="AnimationNodeAnimation" id=54]
+animation = "HammerLiftDownRight"
+
+[sub_resource type="AnimationNodeAnimation" id=57]
+animation = "HammerLowIdle"
+
+[sub_resource type="AnimationNodeAnimation" id=55]
+animation = "HammerSlamDownRight"
+
 [sub_resource type="AnimationNodeAnimation" id=19]
 animation = "IdleUpLeft"
 
@@ -1007,16 +1163,40 @@ blend_mode = 1
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=49]
 
+[sub_resource type="AnimationNodeStateMachineTransition" id=58]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=59]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=60]
+switch_mode = 2
+auto_advance = true
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=61]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=62]
+switch_mode = 2
+auto_advance = true
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=63]
+
 [sub_resource type="AnimationNodeStateMachine" id=11]
+states/HammerHighIdle/node = SubResource( 56 )
+states/HammerHighIdle/position = Vector2( 985, 72 )
+states/HammerLiftDownRight/node = SubResource( 54 )
+states/HammerLiftDownRight/position = Vector2( 745, 119 )
+states/HammerLowIdle/node = SubResource( 57 )
+states/HammerLowIdle/position = Vector2( 455, 86 )
+states/HammerSlamDownRight/node = SubResource( 55 )
+states/HammerSlamDownRight/position = Vector2( 745, 38 )
 states/Idle/node = SubResource( 15 )
-states/Idle/position = Vector2( 434, 126 )
+states/Idle/position = Vector2( 462, 197 )
 states/IdleBucket/node = SubResource( 40 )
-states/IdleBucket/position = Vector2( 445, 226 )
+states/IdleBucket/position = Vector2( 434, 329 )
 states/Walking/node = SubResource( 16 )
-states/Walking/position = Vector2( 669, 126 )
+states/Walking/position = Vector2( 683, 213 )
 states/WalkingBucket/node = SubResource( 41 )
-states/WalkingBucket/position = Vector2( 644, 231 )
-transitions = [ "Idle", "Walking", SubResource( 17 ), "Walking", "Idle", SubResource( 18 ), "Idle", "IdleBucket", SubResource( 42 ), "IdleBucket", "Idle", SubResource( 43 ), "IdleBucket", "WalkingBucket", SubResource( 48 ), "WalkingBucket", "IdleBucket", SubResource( 49 ) ]
+states/WalkingBucket/position = Vector2( 701, 329 )
+transitions = [ "Idle", "Walking", SubResource( 17 ), "Walking", "Idle", SubResource( 18 ), "Idle", "IdleBucket", SubResource( 42 ), "IdleBucket", "Idle", SubResource( 43 ), "IdleBucket", "WalkingBucket", SubResource( 48 ), "WalkingBucket", "IdleBucket", SubResource( 49 ), "Idle", "HammerLowIdle", SubResource( 58 ), "HammerLowIdle", "HammerLiftDownRight", SubResource( 59 ), "HammerLiftDownRight", "HammerHighIdle", SubResource( 60 ), "HammerHighIdle", "HammerSlamDownRight", SubResource( 61 ), "HammerSlamDownRight", "HammerLowIdle", SubResource( 62 ), "HammerLowIdle", "Idle", SubResource( 63 ) ]
 start_node = "Idle"
 
 [sub_resource type="AnimationNodeStateMachinePlayback" id=1]
@@ -1026,11 +1206,15 @@ collision_layer = 2
 collision_mask = 3
 script = ExtResource( 2 )
 
+[node name="Shadow" type="Sprite" parent="."]
+position = Vector2( 1, 6 )
+texture = ExtResource( 3 )
+
 [node name="Sprite" type="Sprite" parent="."]
 position = Vector2( 1, -23 )
 texture = ExtResource( 1 )
 hframes = 9
-vframes = 5
+vframes = 6
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( 1, 2 )
@@ -1044,6 +1228,10 @@ anims/DownLeft = SubResource( 4 )
 anims/DownLeftBucket = SubResource( 28 )
 anims/DownRight = SubResource( 5 )
 anims/DownRightBucket = SubResource( 29 )
+anims/HammerHighIdle = SubResource( 53 )
+anims/HammerLiftDownRight = SubResource( 51 )
+anims/HammerLowIdle = SubResource( 50 )
+anims/HammerSlamDownRight = SubResource( 52 )
 anims/IdleDownLeft = SubResource( 6 )
 anims/IdleDownLeftBucket = SubResource( 32 )
 anims/IdleDownRight = SubResource( 7 )

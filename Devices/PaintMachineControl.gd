@@ -1,13 +1,13 @@
 extends PopupDialog
 
 
-onready var redLabel : Label = $VBoxContainer/HBoxContainer/RedLabel
+#onready var redLabel : Label = $VBoxContainer/HBoxContainer/RedLabel
 onready var redSlider : HSlider = $VBoxContainer/HBoxContainer/RedSlider
 
-onready var blueLabel : Label = $VBoxContainer/HBoxContainer2/BlueLabel
+#onready var blueLabel : Label = $VBoxContainer/HBoxContainer2/BlueLabel
 onready var blueSlider : HSlider = $VBoxContainer/HBoxContainer2/BlueSlider
 
-onready var greenLabel : Label = $VBoxContainer/HBoxContainer3/GreenLabel
+#onready var greenLabel : Label = $VBoxContainer/HBoxContainer3/GreenLabel
 onready var greenSlider : HSlider = $VBoxContainer/HBoxContainer3/GreenSlider
 
 onready var paintPreview : ColorRect = $VBoxContainer/HBoxContainer4/PaintPreview
@@ -25,17 +25,17 @@ func updatePaintPreview()->void:
 
 func _on_RedSlider_value_changed(value):
 	var percentage : int = round(value*100/redSlider.max_value)
-	redLabel.text = str(percentage) + "%"
+#	redLabel.text = str(percentage) + "%"
 	updatePaintPreview()
 	
 func _on_BlueSlider_value_changed(value):
 	var percentage : int = round(value*100/blueSlider.max_value)
-	blueLabel.text = str(percentage) + "%"
+#	blueLabel.text = str(percentage) + "%"
 	updatePaintPreview()
 	
 func _on_GreenSlider_value_changed(value):
 	var percentage : int = round(value*100/greenSlider.max_value)
-	greenLabel.text = str(percentage) + "%"
+#	greenLabel.text = str(percentage) + "%"
 	updatePaintPreview()
 
 

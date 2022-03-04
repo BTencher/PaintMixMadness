@@ -7,6 +7,9 @@ var temporary_color : Color = startColor
 
 var hasLid : bool = false setget closeLid
 var isFilled : bool = false
+var shaken : bool = false
+
+var lidHits : int = 0
 
 onready var paintCanInside : Sprite = $PaintCanInside
 onready var paintCanBodyClose: Sprite = $PaintCanBodyClose
@@ -22,11 +25,10 @@ func update_current_color(int_percent_complete : int) -> void:
 	if int_percent_complete < 100:
 		temporary_color = Color(lerp(startColor,paintEndColor,float(int_percent_complete)/100.00))#(startColor/255).linear_interpolate(paintEndColor/255,float(int_percent_complete)/100.00)
 		update_paint_colors(temporary_color)
-		print(temporary_color)
 	else:
 		temporary_color = paintEndColor
+		isFilled = true
 		update_paint_colors(temporary_color)
-		print(temporary_color)
 
 func update_paint_colors(v_currentPaintColor : Color) -> void:
 	paintCanInside.modulate = v_currentPaintColor

@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://Art Assets/ConcreteLight.png" type="Texture" id=1]
 [ext_resource path="res://Art Assets/regularbox.png" type="Texture" id=2]
@@ -7,6 +7,8 @@
 [ext_resource path="res://Devices/PaintMachine.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Devices/BucketCubby.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Room.gd" type="Script" id=7]
+[ext_resource path="res://Devices/HammerStation.tscn" type="PackedScene" id=8]
+[ext_resource path="res://Devices/PaintShaker.tscn" type="PackedScene" id=9]
 
 [sub_resource type="ConvexPolygonShape2D" id=5]
 points = PoolVector2Array( 0.564781, 24.3202, 16.5315, 16.8431, 31.5636, 24.3981, 17.1546, 31.6415 )
@@ -79,13 +81,19 @@ format = 1
 tile_data = PoolIntArray( -196602, 1, 0, -196601, 1, 0, -196600, 1, 0, -196599, 1, 0, -196598, 1, 0, -196597, 1, 0, -196596, 1, 0, -196595, 1, 0, -196594, 1, 0, -196593, 1, 0, -131066, 1, 0, -131057, 1, 0, -65530, 1, 0, -65521, 1, 0, 15, 1, 0, 65551, 1, 0, 131087, 1, 0, 196614, 1, 0, 196623, 1, 0, 262150, 1, 0, 262159, 1, 0, 327686, 1, 0, 327687, 1, 0, 327688, 1, 0, 327689, 1, 0, 327690, 1, 0, 327691, 1, 0, 327692, 1, 0, 327693, 1, 0, 327694, 1, 0, 327695, 0, 0 )
 
 [node name="PaintMachine" parent="YSort" instance=ExtResource( 5 )]
-position = Vector2( 226, 90 )
+position = Vector2( 241, 98 )
 
 [node name="PaintMachine2" parent="YSort" instance=ExtResource( 5 )]
-position = Vector2( 175, 65 )
+position = Vector2( 209, 82 )
 
 [node name="BucketCubby" parent="YSort" instance=ExtResource( 6 )]
 position = Vector2( 85, 71 )
 
+[node name="HammerStation" parent="YSort" instance=ExtResource( 8 )]
+position = Vector2( 255, 128 )
+
 [node name="Worker" parent="YSort" instance=ExtResource( 3 )]
 position = Vector2( 145, 100 )
+
+[node name="PaintShaker" parent="." instance=ExtResource( 9 )]
+position = Vector2( 184, 151 )

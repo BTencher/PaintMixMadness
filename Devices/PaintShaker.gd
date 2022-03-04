@@ -3,23 +3,18 @@ extends Node2D
 onready var keyPressSprite : Sprite = $KeyPressSprite
 onready var keyPressAnimator : AnimationPlayer = $KeyPressAnimator
 onready var paintCanPosition : Position2D = $PaintCanPosition
-onready var menuPosition : Position2D = $MenuPosition
-onready var paintSpittle : Particles2D = $PaintSpittle
 onready var goodProgress : TextureProgress = $GoodProgress
 onready var badProgress : TextureProgress = $BadProgress
 onready var textureTimer : Timer = $TextureTimer
 onready var interactArea : Area2D = $InteractArea
+onready var shakingAnimation : AnimationPlayer = $ShakingAnimation
 
-
-signal playerNearEmptyMachine(body,this_node)
-signal playerNearLoadedMachine(body,this_node)
-signal playerFarFromPaintMachine(body,this_node)
+signal playerNearEmptyShaker(body,this_node)
+signal playerNearLoadedShaker(body,this_node)
+signal playerFarFromShaker(body,this_node)
 
 var playersThatCanPress : Array = []
-
 var currentPaintBucket : Node2D
-
-var paintMachineColor : Color
 
 enum States {EMPTY,RUNNING,COMPLETED}
 var _state : int = States.EMPTY
@@ -33,6 +28,7 @@ func add_worker_to_nearby(worker_node : KinematicBody2D) -> void:
 	update_key_press_sprite()
 
 func update_key_press_sprite() -> void:
+	print(playersThatCanPress.size())
 	if playersThatCanPress.size() > 0 and keyPressSprite.visible == false:
 		keyPressSprite.visible = true
 		keyPressAnimator.play("KeyPress")
@@ -40,70 +36,68 @@ func update_key_press_sprite() -> void:
 		keyPressSprite.visible = false
 		keyPressAnimator.stop()
 
-func remove_from_machine_can_press(player_node : KinematicBody2D) -> void:
+func remove_from_shaker_can_press(player_node : KinematicBody2D) -> void:
 	if playersThatCanPress.find(player_node) > -1:
 		playersThatCanPress.erase(player_node)
 		update_key_press_sprite()
 
-func move_paint_can_to_machine(paintCanNode : Node2D) -> void:
+func move_and_start_shaker(paintCanNode : Node2D):
+	move_paint_can_to_shaker(paintCanNode)
+	move_paint_can_to_correct_position(paintCanNode)
+	set_state_to_running()
+	start_texture_progress()
+	start_shaking_animation()
+
+func move_paint_can_to_shaker(paintCanNode : Node2D) -> void:
 	var paintCan : Node2D = paintCanNode
 	paintCan.position = paintCanPosition.position
 	add_child(paintCan)
 	currentPaintBucket = paintCan
 
-func get_menu_location() -> Vector2:
-	return menuPosition.global_position
-
-func run_paint_machine(color : Color) -> void:
-	paintMachineColor = color
-	set_state_to_running()
-	start_spewing_paint(paintMachineColor)
-	start_texture_progress()
-	currentPaintBucket.set_end_paint_color(paintMachineColor)
+func move_paint_can_to_correct_position(paintCanNode : Node2D) -> void:
+	move_child(currentPaintBucket,1)
 
 func set_state_to_running() -> void:
 	_state = States.RUNNING
 	interactArea.monitoring = false
-	
-
-func start_spewing_paint(color : Color) -> void:
-	paintSpittle.modulate = color
-	move_child(currentPaintBucket,1)
-	paintSpittle.emitting = true
 
 func start_texture_progress() -> void:
+	print("start the things!")
 	goodProgress.value = 0
 	badProgress.value = 0
 	goodProgress.visible = true
 	textureTimer.start()
 
-func turn_off_machine() -> void:
+func start_shaking_animation() -> void:
+	shakingAnimation.play("Shaking")
+
+func update_paint_can_during_shaking() -> void:
+	currentPaintBucket.position = paintCanPosition.position
+
+func turn_off_shaker() -> void:
+	shakingAnimation.play("Idle")
 	goodProgress.value = 0
 	badProgress.value = 0
 	goodProgress.visible = false
 	badProgress.visible = false
-	paintSpittle.emitting = false
 	textureTimer.stop()
 
 func _on_InteractArea_body_entered(body):
 	if currentPaintBucket:
-		emit_signal("playerNearLoadedMachine",body,self)
+		emit_signal("playerNearLoadedShaker",body,self)
 	else:
-		emit_signal("playerNearEmptyMachine",body,self)
+		emit_signal("playerNearEmptyShaker",body,self)
 
 func _on_InteractArea_body_exited(body):
-	playersThatCanPress.erase(body)
-	update_key_press_sprite()
-	emit_signal("playerFarFromPaintMachine",body,self)
-
+	pass # Replace with function body.
 
 func _on_TextureTimer_timeout():
 	if goodProgress.value < 100:
 		goodProgress.value += 1
-		currentPaintBucket.update_current_color(goodProgress.value)
 	elif badProgress.visible == false:
 		badProgress.visible = true
 		_state = States.COMPLETED #Paint Filled
+		currentPaintBucket.shaken = true
 		interactArea.monitoring = true #Workers can now grab paint.
 	elif badProgress.value < 100:
 		badProgress.value += 1
