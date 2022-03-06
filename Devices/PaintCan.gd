@@ -9,6 +9,9 @@ var hasLid : bool = false setget closeLid
 var isFilled : bool = false
 var shaken : bool = false
 
+var tooMuchPaint : bool = false
+var tooShaken : bool = false
+
 var lidHits : int = 0
 
 onready var paintCanInside : Sprite = $PaintCanInside
@@ -38,3 +41,4 @@ func closeLid(new_value : bool) -> void:
 	hasLid = new_value
 	paintCanBodyClose.visible = hasLid
 	paintCanCloseLabel.visible = hasLid
+	paintEndColor.a = 1

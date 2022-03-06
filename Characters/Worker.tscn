@@ -1,4 +1,4 @@
-[gd_scene load_steps=65 format=2]
+[gd_scene load_steps=66 format=2]
 
 [ext_resource path="res://Art Assets/Worker.png" type="Texture" id=1]
 [ext_resource path="res://Characters/Worker.gd" type="Script" id=2]
@@ -1049,103 +1049,103 @@ animation = "HammerLowIdle"
 [sub_resource type="AnimationNodeAnimation" id=55]
 animation = "HammerSlamDownRight"
 
-[sub_resource type="AnimationNodeAnimation" id=19]
+[sub_resource type="AnimationNodeAnimation" id=64]
 animation = "IdleUpLeft"
 
-[sub_resource type="AnimationNodeAnimation" id=20]
+[sub_resource type="AnimationNodeAnimation" id=65]
 animation = "IdleDownRight"
 
-[sub_resource type="AnimationNodeAnimation" id=21]
+[sub_resource type="AnimationNodeAnimation" id=66]
 animation = "IdleUpRight"
 
-[sub_resource type="AnimationNodeAnimation" id=22]
+[sub_resource type="AnimationNodeAnimation" id=67]
 animation = "IdleDownLeft"
 
 [sub_resource type="AnimationNodeBlendSpace2D" id=15]
-blend_point_0/node = SubResource( 19 )
+blend_point_0/node = SubResource( 64 )
 blend_point_0/pos = Vector2( -1, -1.1 )
-blend_point_1/node = SubResource( 20 )
+blend_point_1/node = SubResource( 65 )
 blend_point_1/pos = Vector2( 1.1, 1 )
-blend_point_2/node = SubResource( 21 )
+blend_point_2/node = SubResource( 66 )
 blend_point_2/pos = Vector2( 1.1, -1.1 )
-blend_point_3/node = SubResource( 22 )
+blend_point_3/node = SubResource( 67 )
 blend_point_3/pos = Vector2( -1, 1 )
 min_space = Vector2( -1, -1.1 )
 max_space = Vector2( 1.1, 1 )
 blend_mode = 1
 
-[sub_resource type="AnimationNodeAnimation" id=36]
+[sub_resource type="AnimationNodeAnimation" id=68]
 animation = "IdleDownLeftBucket"
 
-[sub_resource type="AnimationNodeAnimation" id=37]
+[sub_resource type="AnimationNodeAnimation" id=69]
 animation = "IdleDownRightBucket"
 
-[sub_resource type="AnimationNodeAnimation" id=38]
+[sub_resource type="AnimationNodeAnimation" id=70]
 animation = "IdleUpRightBucket"
 
-[sub_resource type="AnimationNodeAnimation" id=39]
+[sub_resource type="AnimationNodeAnimation" id=71]
 animation = "IdleUpLeftBucket"
 
 [sub_resource type="AnimationNodeBlendSpace2D" id=40]
-blend_point_0/node = SubResource( 36 )
+blend_point_0/node = SubResource( 68 )
 blend_point_0/pos = Vector2( -1, 1 )
-blend_point_1/node = SubResource( 37 )
+blend_point_1/node = SubResource( 69 )
 blend_point_1/pos = Vector2( 1.1, 1 )
-blend_point_2/node = SubResource( 38 )
+blend_point_2/node = SubResource( 70 )
 blend_point_2/pos = Vector2( 1.1, -1.1 )
-blend_point_3/node = SubResource( 39 )
+blend_point_3/node = SubResource( 71 )
 blend_point_3/pos = Vector2( -1, -1.1 )
 min_space = Vector2( -1, -1.1 )
 max_space = Vector2( 1.1, 1 )
 blend_mode = 1
 
-[sub_resource type="AnimationNodeAnimation" id=23]
+[sub_resource type="AnimationNodeAnimation" id=72]
 animation = "DownLeft"
 
-[sub_resource type="AnimationNodeAnimation" id=24]
+[sub_resource type="AnimationNodeAnimation" id=73]
 animation = "DownRight"
 
-[sub_resource type="AnimationNodeAnimation" id=25]
+[sub_resource type="AnimationNodeAnimation" id=74]
 animation = "UpRight"
 
-[sub_resource type="AnimationNodeAnimation" id=26]
+[sub_resource type="AnimationNodeAnimation" id=75]
 animation = "UpLeft"
 
 [sub_resource type="AnimationNodeBlendSpace2D" id=16]
 auto_triangles = false
-blend_point_0/node = SubResource( 23 )
+blend_point_0/node = SubResource( 72 )
 blend_point_0/pos = Vector2( -1, 1.1 )
-blend_point_1/node = SubResource( 24 )
+blend_point_1/node = SubResource( 73 )
 blend_point_1/pos = Vector2( 1.1, 1.1 )
-blend_point_2/node = SubResource( 25 )
+blend_point_2/node = SubResource( 74 )
 blend_point_2/pos = Vector2( 1.1, -1.1 )
-blend_point_3/node = SubResource( 26 )
+blend_point_3/node = SubResource( 75 )
 blend_point_3/pos = Vector2( -1, -1.1 )
 triangles = PoolIntArray( 0, 1, 3, 1, 2, 3 )
 min_space = Vector2( -1, -1.1 )
 max_space = Vector2( 1.1, 1 )
 blend_mode = 1
 
-[sub_resource type="AnimationNodeAnimation" id=44]
+[sub_resource type="AnimationNodeAnimation" id=76]
 animation = "DownLeftBucket"
 
-[sub_resource type="AnimationNodeAnimation" id=45]
+[sub_resource type="AnimationNodeAnimation" id=77]
 animation = "DownRightBucket"
 
-[sub_resource type="AnimationNodeAnimation" id=46]
+[sub_resource type="AnimationNodeAnimation" id=78]
 animation = "UpRightBucket"
 
-[sub_resource type="AnimationNodeAnimation" id=47]
+[sub_resource type="AnimationNodeAnimation" id=79]
 animation = "UpLeftBucket"
 
 [sub_resource type="AnimationNodeBlendSpace2D" id=41]
-blend_point_0/node = SubResource( 44 )
+blend_point_0/node = SubResource( 76 )
 blend_point_0/pos = Vector2( -1, 1 )
-blend_point_1/node = SubResource( 45 )
+blend_point_1/node = SubResource( 77 )
 blend_point_1/pos = Vector2( 1.1, 1 )
-blend_point_2/node = SubResource( 46 )
+blend_point_2/node = SubResource( 78 )
 blend_point_2/pos = Vector2( 1.1, -1.1 )
-blend_point_3/node = SubResource( 47 )
+blend_point_3/node = SubResource( 79 )
 blend_point_3/pos = Vector2( -1, -1.1 )
 min_space = Vector2( -1, -1.1 )
 max_space = Vector2( 1.1, 1 )
@@ -1201,9 +1201,13 @@ start_node = "Idle"
 
 [sub_resource type="AnimationNodeStateMachinePlayback" id=1]
 
+[sub_resource type="CapsuleShape2D" id=80]
+radius = 8.43017
+height = 44.834
+
 [node name="Worker" type="KinematicBody2D" groups=["Worker"]]
 collision_layer = 2
-collision_mask = 3
+collision_mask = 15
 script = ExtResource( 2 )
 
 [node name="Shadow" type="Sprite" parent="."]
@@ -1259,3 +1263,17 @@ parameters/WalkingBucket/blend_position = Vector2( 0.488079, -0.65 )
 
 [node name="BucketPosition" type="Position2D" parent="."]
 position = Vector2( 2, -13 )
+
+[node name="TexalogPosition" type="Position2D" parent="."]
+position = Vector2( 0, -53 )
+
+[node name="PaintGiveArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PaintGiveArea"]
+position = Vector2( -30, 26 )
+rotation = 0.909317
+shape = SubResource( 80 )
+
+[connection signal="body_entered" from="PaintGiveArea" to="." method="_on_PaintGiveArea_body_entered"]

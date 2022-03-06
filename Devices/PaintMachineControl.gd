@@ -23,18 +23,18 @@ func _ready():
 func updatePaintPreview()->void:
 	paintPreview.color = Color(redSlider.value/255.0,greenSlider.value/255.0,blueSlider.value/255.0, 1)
 
-func _on_RedSlider_value_changed(value):
-	var percentage : int = round(value*100/redSlider.max_value)
+func _on_RedSlider_value_changed(_value):
+#	var percentage : int = round(value*100/redSlider.max_value)
 #	redLabel.text = str(percentage) + "%"
 	updatePaintPreview()
 	
-func _on_BlueSlider_value_changed(value):
-	var percentage : int = round(value*100/blueSlider.max_value)
+func _on_BlueSlider_value_changed(_value):
+#	var percentage : int = round(value*100/blueSlider.max_value)
 #	blueLabel.text = str(percentage) + "%"
 	updatePaintPreview()
 	
-func _on_GreenSlider_value_changed(value):
-	var percentage : int = round(value*100/greenSlider.max_value)
+func _on_GreenSlider_value_changed(_value):
+#	var percentage : int = round(value*100/greenSlider.max_value)
 #	greenLabel.text = str(percentage) + "%"
 	updatePaintPreview()
 
@@ -47,4 +47,7 @@ func _on_ColorizeButton_button_down():
 	queue_free()
 
 func _on_Control_popup_hide():
-	pass # Replace with function body.
+	workerNode._state = workerNode.States.EMPTY_HANDS
+	workerNode.currentBucketNode = null
+	workerNode.currentMachineNode = null
+	queue_free()

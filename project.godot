@@ -142,6 +142,8 @@ config/icon="res://icon.png"
 
 window/size/width=1600
 window/size/height=1200
+window/size/test_width=800
+window/size/test_height=600
 window/stretch/mode="viewport"
 window/stretch/aspect="keep"
 
@@ -208,15 +210,18 @@ interact={
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":0,"physical_scancode":69,"unicode":0,"echo":false,"script":null)
  ]
 }
-find_pos={
+click={
 "deadzone": 0.5,
-"events": [  ]
+"events": [ Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"button_mask":0,"position":Vector2( 0, 0 ),"global_position":Vector2( 0, 0 ),"factor":1.0,"button_index":1,"pressed":false,"doubleclick":false,"script":null)
+ ]
 }
 
 [layer_names]
 
 2d_physics/layer_1="Environment"
 2d_physics/layer_2="Characters"
+2d_physics/layer_3="Customers"
+2d_physics/layer_4="Machines"
 
 [physics]
 

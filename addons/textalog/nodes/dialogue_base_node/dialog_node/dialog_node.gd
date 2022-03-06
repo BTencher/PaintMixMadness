@@ -24,14 +24,14 @@ signal character_displayed(character)
 ## Values between 0.02 and 0.08 are good ones to use.
 export(float) var text_speed:float = 0.02
 ## If true, DialogManager will try to scroll the text to fit new content
-export(bool) var text_autoscroll:bool = false
+export(bool) var text_autoscroll:bool = true #false BTENCHER1
 ## If true and [member text_autoscroll] is false, DialogManager will scale its size
 ## to fit its content.
 export(bool) var text_fit_content_height:bool = false
 ## If true, DialogManager will show an VScroll to scroll its content
 export(bool) var text_show_scroll_at_end:bool = true
 ## The [member BubblePosition] that the bubble will take as reference point.
-export(BubblePosition) var bubble_anchor:int = BubblePosition.CENTER_DOWN setget _set_bubble_anchor
+export(BubblePosition) var bubble_anchor:int = BubblePosition.CENTER_TOP setget _set_bubble_anchor #CENTER_DOWN setget _set_bubble_anchor BTENCHER
 ## Offset of the bubble relative to the selected [member bubble_anchor]
 export(Vector2) var bubble_offset:Vector2 = Vector2() setget _set_bubble_offset
 

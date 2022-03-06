@@ -11,7 +11,7 @@ onready var textureTimer : Timer = $TextureTimer
 onready var interactArea : Area2D = $InteractArea
 
 
-signal playerNearEmptyMachine(body,this_node)
+#signal playerNearEmptyMachine(body,this_node)
 signal playerNearLoadedMachine(body,this_node)
 signal playerFarFromPaintMachine(body,this_node)
 
@@ -21,16 +21,13 @@ var currentPaintBucket : Node2D
 
 var paintMachineColor : Color
 
-enum States {EMPTY,RUNNING,COMPLETED}
-var _state : int = States.EMPTY
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	keyPressSprite.visible = false
 
-func add_worker_to_nearby(worker_node : KinematicBody2D) -> void:
-	playersThatCanPress.append(worker_node)
-	update_key_press_sprite()
+#func add_worker_to_nearby(worker_node : KinematicBody2D) -> void:
+#	playersThatCanPress.append(worker_node)
+#	update_key_press_sprite()
 
 func update_key_press_sprite() -> void:
 	if playersThatCanPress.size() > 0 and keyPressSprite.visible == false:
@@ -56,15 +53,10 @@ func get_menu_location() -> Vector2:
 
 func run_paint_machine(color : Color) -> void:
 	paintMachineColor = color
-	set_state_to_running()
+	interactArea.monitoring = false
 	start_spewing_paint(paintMachineColor)
 	start_texture_progress()
 	currentPaintBucket.set_end_paint_color(paintMachineColor)
-
-func set_state_to_running() -> void:
-	_state = States.RUNNING
-	interactArea.monitoring = false
-	
 
 func start_spewing_paint(color : Color) -> void:
 	paintSpittle.modulate = color
@@ -84,12 +76,30 @@ func turn_off_machine() -> void:
 	badProgress.visible = false
 	paintSpittle.emitting = false
 	textureTimer.stop()
+	currentPaintBucket = null
 
 func _on_InteractArea_body_entered(body):
+	print(body._state)
 	if currentPaintBucket:
-		emit_signal("playerNearLoadedMachine",body,self)
+		if body._state == body.States.EMPTY_HANDS:
+			body.nearbyPaintMachine.append(self)
+			if body.currentMachineNode:
+				if body.currentMachineNode != self:
+					body.currentMachineNode.playersThatCanPress.erase(body)
+					body.currentMachineNode.update_key_press_sprite()
+			body.currentMachineNode = self
+			body._state = body.States.CAN_USE_MACHINE
+			playersThatCanPress.append(body)
+			update_key_press_sprite()
 	else:
-		emit_signal("playerNearEmptyMachine",body,self)
+		if body._state == body.States.EMPTY_PAINT or body._state == body.States.CAN_USE_MACHINE:
+			print("Hey?")
+			body.nearbyPaintMachine.append(self)
+			body.currentMachineNode = self
+			body._state = body.States.CAN_USE_MACHINE
+			playersThatCanPress.append(body)
+			update_key_press_sprite()
+		#emit_signal("playerNearEmptyMachine",body,self)
 
 func _on_InteractArea_body_exited(body):
 	playersThatCanPress.erase(body)
@@ -103,7 +113,6 @@ func _on_TextureTimer_timeout():
 		currentPaintBucket.update_current_color(goodProgress.value)
 	elif badProgress.visible == false:
 		badProgress.visible = true
-		_state = States.COMPLETED #Paint Filled
 		interactArea.monitoring = true #Workers can now grab paint.
 	elif badProgress.value < 100:
 		badProgress.value += 1

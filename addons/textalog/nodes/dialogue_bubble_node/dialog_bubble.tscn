@@ -1,10 +1,18 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://addons/textalog/nodes/dialogue_base_node/dialogue_base_node.tscn" type="PackedScene" id=1]
 [ext_resource path="res://addons/textalog/nodes/dialogue_bubble_node/dialog_bubble.gd" type="Script" id=2]
-[ext_resource path="res://addons/textalog/assets/themes/default_bubble/default_bubble.tres" type="Theme" id=3]
+[ext_resource path="res://addons/textalog/assets/themes/default_bubble/blue_n_black_stylebox.tres" type="StyleBox" id=3]
+[ext_resource path="res://addons/textalog/assets/themes/default_bubble/blue_bubble.tres" type="StyleBox" id=4]
+[ext_resource path="res://addons/textalog/assets/fonts/Silver/godot_fonts/silver_normal.tres" type="DynamicFont" id=5]
 
-[sub_resource type="Image" id=4]
+[sub_resource type="Theme" id=4]
+default_font = ExtResource( 5 )
+DialogNode/styles/bubble = ExtResource( 4 )
+DialogNode/styles/name = null
+DialogNode/styles/text = ExtResource( 3 )
+
+[sub_resource type="Image" id=8]
 data = {
 "data": PoolByteArray( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
 "format": "LumAlpha8",
@@ -13,36 +21,58 @@ data = {
 "width": 16
 }
 
-[sub_resource type="ImageTexture" id=2]
+[sub_resource type="ImageTexture" id=6]
 flags = 4
 flags = 4
-image = SubResource( 4 )
+image = SubResource( 8 )
 size = Vector2( 16, 16 )
 
-[sub_resource type="StyleBoxTexture" id=3]
-texture = SubResource( 2 )
+[sub_resource type="StyleBoxTexture" id=7]
+texture = SubResource( 6 )
 region_rect = Rect2( 0, 0, 16, 16 )
 margin_left = 2.0
 margin_right = 2.0
 margin_top = 2.0
 margin_bottom = 2.0
 
-[node name="DialogBubble" instance=ExtResource( 1 )]
+[node name="DialogBubble" groups=["Bubble"] instance=ExtResource( 1 )]
 margin_left = 616.0
 margin_top = -203.0
 margin_right = -218.0
 margin_bottom = -651.0
-theme = ExtResource( 3 )
+theme = SubResource( 4 )
 script = ExtResource( 2 )
 
 [node name="Options" parent="." index="1"]
 visible = false
 
 [node name="CharacterName" parent="DialogBox" index="0"]
-custom_styles/normal = SubResource( 3 )
+visible = false
+custom_styles/normal = SubResource( 7 )
 
 [node name="DialogManager" parent="DialogBox" index="1"]
 margin_left = 0.552
 margin_top = -0.109985
-margin_right = -53.382
-margin_bottom = -0.210022
+margin_right = -426.382
+margin_bottom = -23.07
+text_speed = 0.0
+
+[node name="AlphaTimer" type="Timer" parent="." index="3" groups=["CustomTimer"]]
+wait_time = 5.0
+
+[node name="CloseTimer" type="Timer" parent="." index="4" groups=["CustomTimer"]]
+wait_time = 2.0
+one_shot = true
+
+[node name="Tween" type="Tween" parent="." index="5" groups=["CustomTimer"]]
+playback_speed = 0.7
+playback/speed = 0.7
+
+[node name="FunkyTimer" type="Timer" parent="." index="6" groups=["CustomTimer"]]
+wait_time = 0.2
+one_shot = true
+
+[connection signal="text_displayed" from="." to="." method="_on_DialogBubble_text_displayed"]
+[connection signal="timeout" from="AlphaTimer" to="." method="_on_AlphaTimer_timeout"]
+[connection signal="timeout" from="CloseTimer" to="." method="_on_CloseTimer_timeout"]
+[connection signal="timeout" from="FunkyTimer" to="." method="_on_FunkyTimer_timeout"]

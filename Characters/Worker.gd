@@ -11,10 +11,10 @@ onready var bucketPosition : Position2D = $BucketPosition
 onready var animationPlayer : AnimationPlayer = $AnimationPlayer
 onready var animationTree : AnimationTree = $AnimationTree
 onready var animationState = animationTree.get("parameters/playback")
-
+onready var textalogPosition : Position2D = $TexalogPosition
 
 # An enum allows us to keep track of valid states.
-enum States {EMPTY_HANDS, CAN_PICK_UP, PICKING_UP_CAN, EMPTY_PAINT, CAN_USE_MACHINE, USING_MACHINE, OPEN_PAINT, CAN_USE_HAMMER, USING_HAMMER, CLOSE_PAINT, CAN_USE_SHAKER,USING_SHAKER,DONE_PAINT}
+enum States {EMPTY_HANDS, CAN_PICK_UP, PICKING_UP_CAN, EMPTY_PAINT, CAN_USE_MACHINE, USING_MACHINE, OPEN_PAINT, CAN_USE_HAMMER, USING_HAMMER, CLOSE_PAINT, CAN_USE_SHAKER,USING_SHAKER,DONE_PAINT,READY_GIVE}
 var _state : int = States.EMPTY_HANDS
 
 enum HammerStates {ARRIVE, LIFT, READY_SLAM, SLAM, CHECK, DONE}
@@ -30,13 +30,14 @@ var currentBucketNode : Node2D = null
 var currentMachineNode : Node2D = null
 var currentHammerStationNode : Node2D = null
 var currentShakerNode : Node2D = null
+var currentCustomer : KinematicBody2D = null
 
-
+var textalogNode : Position2D = null
 
 signal canInteractCubby(this_node, cubby_node)
 signal disconnectFromCubbies(this_node, arrayNearbyCubbies)
 
-signal canInteractPaintMachine(this_node, machine_node)
+#signal canInteractPaintMachine(this_node, machine_node)
 signal interactWithPaintMachine(this_node, machine_node)
 
 signal canInteractHammerStation(this_node, hammer_station_node)
@@ -47,8 +48,16 @@ signal checkSwingCount(this_node, hammer_station_node)
 signal canInteractShaker(this_node, shaker_node)
 signal interactWithShaker(this_node, machine_node)
 
+signal sendTextalogPosition(position_node, position)
+signal createTextalog(self_node, position_node, text, font_size, time_length, fade_length)
+
+func _ready() -> void:
+	pass
+	
 func _physics_process(delta) -> void:
+	#print(_state)
 	var input_vector : Vector2 = Vector2.ZERO
+	emit_signal("sendTextalogPosition",textalogNode,textalogPosition.global_position)
 	input_vector.x = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
 	input_vector.y = Input.get_action_strength("ui_down") - Input.get_action_strength("ui_up")
 	input_vector = input_vector.normalized()
@@ -65,11 +74,15 @@ func _physics_process(delta) -> void:
 				_state = States.USING_HAMMER
 				interact_with_hammer_station()
 			States.CAN_USE_SHAKER:
+				print("Interact Start")
 				_state = States.USING_SHAKER
 				interact_with_shaker()
+			States.READY_GIVE:
+				print("Ready?")
+				give_paint_to_customer()
 
 	match _state:
-		States.EMPTY_HANDS,States.OPEN_PAINT,States.CAN_PICK_UP,States.EMPTY_PAINT,States.CAN_USE_MACHINE,States.OPEN_PAINT,States.CAN_USE_HAMMER,States.CLOSE_PAINT,States.CAN_USE_SHAKER,States.DONE_PAINT:
+		States.EMPTY_HANDS,States.OPEN_PAINT,States.CAN_PICK_UP,States.EMPTY_PAINT,States.CAN_USE_MACHINE,States.OPEN_PAINT,States.CAN_USE_HAMMER,States.CLOSE_PAINT,States.CAN_USE_SHAKER,States.DONE_PAINT,States.READY_GIVE:
 			if !animationTree.active == true:
 				animationTree.active = true
 			if input_vector != Vector2.ZERO:
@@ -109,23 +122,29 @@ func _physics_process(delta) -> void:
 func pick_up_from_paint_cubby() -> void:
 	animationTree.active = false
 	animationPlayer.play("PickUpBucket") #Calls create_paint_can_child()
-	
 
 func create_paint_can_child() -> void:
 	var paintBucketScene = preload("res://Devices/PaintCan.tscn").instance()
 	currentBucketNode = paintBucketScene
 	add_child(paintBucketScene)
-	call_deferred("emit_signal", "disconnectFromCubbies", self, nearbyCubbies )
+	call_deferred("emit_signal", "disconnectFromCubbies", self, nearbyCubbies)
 	bring_paint_can_to_back()
 
 func move_paint_can() -> void:
-	currentBucketNode.position = bucketPosition.position
+	if currentBucketNode:
+		currentBucketNode.position = bucketPosition.position
 
 func bring_paint_can_to_front() -> void:
-	move_child(currentBucketNode,get_child_count()-1)
+	if currentBucketNode:
+		move_child(currentBucketNode,get_child_count()-1)
+	else:
+		print("bring_paint_can_to_front can for some reason without a bucket.")
 
 func bring_paint_can_to_back() -> void:
-	move_child(currentBucketNode,0)
+	if self.currentBucketNode:
+		move_child(currentBucketNode,0)
+	else:
+		print("bring_paint_can_to_back can for some reason without a bucket.")
 
 func finish_picking_up_paint() -> void:
 	animationTree.active = true
@@ -145,18 +164,18 @@ func mark_cubby_far(cubbyID : StaticBody2D) -> void:
 	if nearbyCubbies.size() == 0 and _state == States.CAN_PICK_UP:
 		_state = States.EMPTY_HANDS
 
-func mark_empty_machine_nearby(machine_id : Node2D) -> void:
-	nearbyPaintMachine.append(machine_id)
-	if nearbyPaintMachine.size() > 0 and _state == States.EMPTY_PAINT:
-		_state = States.CAN_USE_MACHINE
-		emit_signal("canInteractPaintMachine",self,machine_id)
+#func mark_empty_machine_nearby(machine_id : Node2D) -> void:
+#	nearbyPaintMachine.append(machine_id)
+#	if nearbyPaintMachine.size() > 0 and _state == States.EMPTY_PAINT:
+#		_state = States.CAN_USE_MACHINE
+#		emit_signal("canInteractPaintMachine",self,machine_id)
 
-func mark_loaded_machine_nearby(machine_id : Node2D) -> void:
-	nearbyPaintMachine.append(machine_id)
-	if nearbyPaintMachine.size() > 0 and _state == States.EMPTY_HANDS:
-		_state = States.CAN_USE_MACHINE
-	if _state == States.CAN_USE_MACHINE and nearbyPaintMachine.has(machine_id):
-		emit_signal("canInteractPaintMachine",self,machine_id)
+#func mark_loaded_machine_nearby(machine_id : Node2D) -> void:
+#	nearbyPaintMachine.append(machine_id)
+#	if nearbyPaintMachine.size() > 0 and _state == States.EMPTY_HANDS:
+#		_state = States.CAN_USE_MACHINE
+#	if _state == States.CAN_USE_MACHINE and nearbyPaintMachine.has(machine_id):
+#		emit_signal("canInteractPaintMachine",self,machine_id)
 		
 func mark_machine_far(machine_id : Node2D) -> void:
 	nearbyPaintMachine.erase(machine_id)
@@ -165,12 +184,13 @@ func mark_machine_far(machine_id : Node2D) -> void:
 			if currentBucketNode.hasLid:
 				_state = States.CLOSE_PAINT
 				print("Probably never called")
-			if currentBucketNode.isFilled:
+			elif currentBucketNode.isFilled:
 				_state = States.OPEN_PAINT
 			else:
 				_state = States.EMPTY_PAINT
 		else:
 			_state = States.EMPTY_HANDS
+			print("Make Empty Hands?")
 
 func interact_with_paint_machine() -> void:
 	currentMachineNode = nearbyPaintMachine[0] #Mark machine we are using
@@ -190,6 +210,7 @@ func release_worker_from_machine() -> void:
 	currentBucketNode = null
 	animationPlayer.stop()
 	animationTree.active = true
+	print("release from machine")
 
 func move_paint_can_from_machine_to_worker(paintCanNode : Node2D) -> void:
 	currentBucketNode = paintCanNode
@@ -228,11 +249,6 @@ func ready_for_hammer_swing() -> void:
 func end_hammer_swing() -> void:
 	_hammer_state = HammerStates.CHECK
 	emit_signal("checkSwingCount",self,currentHammerStationNode)
-	#if !more_swings:
-	#	end_hammer_station()#_hammer_state = HammerStates.ARRIVE
-
-#func end_hammer_station():
-#	emit_signal("completeHammerStation",self,currentHammerStationNode)
 
 func start_next_swing() -> void:
 	_hammer_state = HammerStates.ARRIVE
@@ -245,24 +261,28 @@ func update_worker_state_to_filled_paint():
 
 func mark_empty_shaker_nearby(shaker_id : Node2D) -> void:
 	nearbyShaker.append(shaker_id)
-	if nearbyShaker.size() > 0 and _state == States.CLOSE_PAINT:
+	currentShakerNode = shaker_id
+	if _state == States.CLOSE_PAINT:
 		_state = States.CAN_USE_SHAKER
 		emit_signal("canInteractShaker",self,shaker_id)
 
 func mark_loaded_shaker_nearby(shaker_id : Node2D) -> void:
 	nearbyShaker.append(shaker_id)
-	if nearbyShaker.size() > 0 and _state == States.EMPTY_HANDS:
+	currentShakerNode = shaker_id
+	if _state == States.EMPTY_HANDS:
 		_state = States.CAN_USE_SHAKER
 	if _state == States.CAN_USE_SHAKER and nearbyShaker.has(shaker_id):
 		emit_signal("canInteractShaker",self,shaker_id)
 
 func interact_with_shaker() -> void:
-	currentShakerNode = nearbyShaker[0] #Mark machine we are using
+	#currentShakerNode = nearbyShaker[0] #Mark machine we are using
 	emit_signal("interactWithShaker",self,currentShakerNode)
+	#_state = States.EMPTY_HANDS
 
 func mark_shaker_far(shaker_id : Node2D) -> void:
+	currentShakerNode = null
 	nearbyPaintMachine.erase(shaker_id)
-	if nearbyPaintMachine.size() == 0 and _state == States.CAN_USE_MACHINE:
+	if nearbyPaintMachine.size() == 0 and _state == States.CAN_USE_SHAKER:
 		if currentBucketNode:
 			if currentBucketNode.shaken:
 				_state = States.DONE_PAINT
@@ -281,9 +301,36 @@ func move_paint_can_from_shaker_to_worker(paintCanNode : Node2D) -> void:
 	add_child(paintCanNode)
 	bring_paint_can_to_front()
 	_state = States.DONE_PAINT
+	print(_state)
 	#animationTree.active = true
 
 func release_worker_from_paint_bucket_to_shaker():
-	print(currentBucketNode)
 	_state = States.EMPTY_HANDS
 	currentBucketNode = null
+
+func ask_about_color(finished_color : Color):
+	var color_hex : String =  "#"+finished_color.to_html(false).to_upper()
+	emit_text_signal("Does this [color=" + color_hex + "] paint [/color] look right?", 3, 0.3, 0.04)
+	
+
+func emit_text_signal(text:String, time_length:float, fade_length:float, speed:float):
+	emit_signal("createTextalog", self, textalogNode, text, time_length, fade_length, speed)
+
+func _on_PaintGiveArea_body_entered(body):
+	print(_state)
+	if _state == States.DONE_PAINT:
+		match body._state:
+			body.States.MEANDER, body.States.SUMMONED, body.States.SUMMONED_WAITING:
+				currentCustomer = body
+				_state = States.READY_GIVE
+
+func give_paint_to_customer() -> void:
+	currentBucketNode.visible = false
+	var paintCanNode : Node2D = currentBucketNode
+	currentBucketNode = null
+	remove_child(paintCanNode)
+	currentCustomer.add_child(paintCanNode)
+	_state = States.EMPTY_HANDS
+	currentCustomer.paintCan = paintCanNode
+	print("give to customer")
+	currentCustomer.judge_experience_and_leave()

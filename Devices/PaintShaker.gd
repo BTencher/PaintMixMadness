@@ -28,7 +28,6 @@ func add_worker_to_nearby(worker_node : KinematicBody2D) -> void:
 	update_key_press_sprite()
 
 func update_key_press_sprite() -> void:
-	print(playersThatCanPress.size())
 	if playersThatCanPress.size() > 0 and keyPressSprite.visible == false:
 		keyPressSprite.visible = true
 		keyPressAnimator.play("KeyPress")
@@ -62,7 +61,6 @@ func set_state_to_running() -> void:
 	interactArea.monitoring = false
 
 func start_texture_progress() -> void:
-	print("start the things!")
 	goodProgress.value = 0
 	badProgress.value = 0
 	goodProgress.visible = true
@@ -89,7 +87,9 @@ func _on_InteractArea_body_entered(body):
 		emit_signal("playerNearEmptyShaker",body,self)
 
 func _on_InteractArea_body_exited(body):
-	pass # Replace with function body.
+	emit_signal("playerFarFromShaker",body,self)
+	playersThatCanPress.erase(body)
+	update_key_press_sprite()
 
 func _on_TextureTimer_timeout():
 	if goodProgress.value < 100:

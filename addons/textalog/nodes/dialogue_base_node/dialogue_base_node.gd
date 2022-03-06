@@ -90,7 +90,8 @@ func _fake_enter_tree() -> void:
 
 func _update_all_childs():
 	for child in get_children():
-		child.update()
+		if not child.is_in_group("CustomTimer"):
+			child.update()
 
 
 func _set_default_nodes():
