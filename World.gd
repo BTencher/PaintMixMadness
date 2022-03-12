@@ -95,7 +95,8 @@ func set_clock() -> void:
 		AM_PM = 'AM'
 	var timeDisplay : String = hour_string + ":" + min_string + " " + AM_PM
 	timeDispaly.bbcode_text = "[center]" + timeDisplay + "[/center]"
-var AM_PM : String = 'AM'
+	if hours == 17:
+		end_game_create_end_screen()
 
 func _upate_earned_amout(total_amount : float, color_amt: float, mix_penaly: float, shake_penalty: float):
 	earned_income = earned_income + total_amount
@@ -115,8 +116,16 @@ func shoot_colors(total_amount:float)->void:
 		moneyParticles.amount = 50
 	moneyParticles.emitting = true
 
+func end_game_create_end_screen() -> void:
+	var scene : Popup= preload("res://Devices/EndScreen.tscn").instance()
+	get_tree().paused = true
+	add_child(scene)
+	scene.set_score("$"+str(earned_income).pad_decimals(2))
+	scene.popup_centered()
+	
+
 func update_displayed_money() -> void:
-	cashDispaly.bbcode_text = "[center]$" + str(earned_income) + "[/center]"
+	cashDispaly.bbcode_text = "[center]$" + str(earned_income).pad_decimals(2) + "[/center]"
 
 func _on_ClockTimer_timeout():
 	print(minutes)

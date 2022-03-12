@@ -7,7 +7,8 @@ onready var menuPosition : Position2D = $MenuPosition
 onready var paintSpittle : Particles2D = $PaintSpittle
 onready var goodProgress : TextureProgress = $GoodProgress
 onready var badProgress : TextureProgress = $BadProgress
-onready var textureTimer : Timer = $TextureTimer
+onready var goodTimer : Timer = $GoodTimer
+onready var badTimer : Timer = $BadTimer
 onready var interactArea : Area2D = $InteractArea
 
 
@@ -24,10 +25,6 @@ var paintMachineColor : Color
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	keyPressSprite.visible = false
-
-#func add_worker_to_nearby(worker_node : KinematicBody2D) -> void:
-#	playersThatCanPress.append(worker_node)
-#	update_key_press_sprite()
 
 func update_key_press_sprite() -> void:
 	if playersThatCanPress.size() > 0 and keyPressSprite.visible == false:
@@ -47,6 +44,7 @@ func move_paint_can_to_machine(paintCanNode : Node2D) -> void:
 	paintCan.position = paintCanPosition.position
 	add_child(paintCan)
 	currentPaintBucket = paintCan
+	move_child(currentPaintBucket,3)
 
 func get_menu_location() -> Vector2:
 	return menuPosition.global_position
@@ -67,7 +65,7 @@ func start_texture_progress() -> void:
 	goodProgress.value = 0
 	badProgress.value = 0
 	goodProgress.visible = true
-	textureTimer.start()
+	goodTimer.start()
 
 func turn_off_machine() -> void:
 	goodProgress.value = 0
@@ -75,7 +73,8 @@ func turn_off_machine() -> void:
 	goodProgress.visible = false
 	badProgress.visible = false
 	paintSpittle.emitting = false
-	textureTimer.stop()
+	goodTimer.stop()
+	badTimer.stop()
 	currentPaintBucket = null
 
 func _on_InteractArea_body_entered(body):
@@ -93,7 +92,6 @@ func _on_InteractArea_body_entered(body):
 			update_key_press_sprite()
 	else:
 		if body._state == body.States.EMPTY_PAINT or body._state == body.States.CAN_USE_MACHINE:
-			print("Hey?")
 			body.nearbyPaintMachine.append(self)
 			body.currentMachineNode = self
 			body._state = body.States.CAN_USE_MACHINE
@@ -107,14 +105,19 @@ func _on_InteractArea_body_exited(body):
 	emit_signal("playerFarFromPaintMachine",body,self)
 
 
-func _on_TextureTimer_timeout():
+func _on_GoodTimer_timeout():
 	if goodProgress.value < 100:
 		goodProgress.value += 1
 		currentPaintBucket.update_current_color(goodProgress.value)
 	elif badProgress.visible == false:
 		badProgress.visible = true
+		currentPaintBucket.isFilled = true
 		interactArea.monitoring = true #Workers can now grab paint.
-	elif badProgress.value < 100:
+		badTimer.start()
+
+
+func _on_BadTimer_timeout():
+	if badProgress.value < 100:
 		badProgress.value += 1
 	else:
-		pass #make bad stuff happen.
+		currentPaintBucket.paint_can_full()

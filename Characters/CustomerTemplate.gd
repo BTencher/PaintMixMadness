@@ -21,6 +21,9 @@ onready var textTimer : Timer = $TextTimer
 onready var responseTimer : Timer = $ResponseTimer
 onready var keyPressSprite : Sprite = $KeyPressSprite
 onready var keyPressAnimator : AnimationPlayer = $KeyPressAnimator
+onready var sprite : Sprite = $Sprite
+onready var moneySprite : Sprite = $MoneySprite
+onready var questionSprite : Sprite = $QuestionSprite
 
 var ready_to_give_order : bool = false
 
@@ -42,6 +45,41 @@ var colorString : String =  colorStringOpen + colorName + colorStringClose
 
 var paintCan : Node2D
 
+var characterOptions = {
+	1:load("res://Art Assets/Customers1.png"), 
+	2:load("res://Art Assets/Customers2.png"),
+	3:load("res://Art Assets/Customers3.png"),
+	4:load("res://Art Assets/Customers4.png"),
+	5:load("res://Art Assets/Customers5.png"),
+	6:load("res://Art Assets/Customers6.png"),
+	7:load("res://Art Assets/Customers7.png")
+	}
+
+var colorOptions = {
+	"Red":Color8(255,0,0),
+	"Salmon":Color8(250,128,114),
+	"Dark Orange":Color8(255,140,0),
+	"Gold":Color8(255,215,0),
+	"Olive":Color8(128,128,0),
+	"Yellow":Color8(255,255,0),
+	"Dark Green":Color8(0,100,0),
+	"Green":Color8(0,128,0),
+	"Lime":Color8(0,255,0),
+	"Cyan":Color8(0,255,255),
+	"Turquoise":Color8(64,224,208),
+	"Navy":Color8(0,0,128),
+	"Blue":Color8(0,0,255),
+	"Indigo":Color8(75,0,130),
+	"Purple":Color8(128,0,128),
+	"Pink":Color8(255,192,203),
+	"Black":Color8(0,0,0),
+	"Silver":Color8(192,192,192),
+	"Tan":Color8(210,180,140),
+	"Orange":Color8(255,165,0)
+	}
+
+
+
 # An enum allows us to keep track of valid states.
 enum States {SPAWN, WAITING, START_ORDER, MEANDER, SUMMONED, SUMMONED_WAITING, LEAVE}
 var _state : int = States.SPAWN
@@ -57,11 +95,14 @@ signal collectPayment(total_amount, color_amt, mix_penaly, shake_penalty)
 signal customerLeave(this_node)
 
 func _ready():
+	rng.randomize()
 	keyPressSprite.visible = false
+	moneySprite.visible = false
+	questionSprite.visible = false
 	set_process(false)
 	set_physics_process(false)
-	rng.randomize()
-	#emit_signal("headToDesk",self)
+	sprite.texture = characterOptions.get(rng.randi_range(1,7))
+	set_color()
 
 func _physics_process(delta):
 	emit_signal("sendTextalogPosition",textalogNode,textalogPosition.global_position)
@@ -72,13 +113,13 @@ func _physics_process(delta):
 				_state = States.WAITING
 				start_waiting()
 				if ready_to_give_order and Input.is_action_just_pressed("interact"):
-					currentWorker.emit_text_signal("Welcome! What can I do for you?", 2, 0.3, 0.02)
+					currentWorker.emit_text_signal("Welcome! What paint do ye seek?", 2, 0.2, 0.01)
 					keyPressSprite.visible = false
 					keyPressAnimator.stop()
 					responseTimer.start()
 		States.WAITING:
 			if ready_to_give_order and Input.is_action_just_pressed("interact"):
-				currentWorker.emit_text_signal("Welcome! What can I do for you?", 2, 0.3, 0.02)
+				currentWorker.emit_text_signal("Welcome! What paint do ye seek?", 2, 0.2, 0.01)
 				keyPressSprite.visible = false
 				keyPressAnimator.stop()
 				responseTimer.start()
@@ -145,9 +186,19 @@ func move_to_next_spot() -> void:
 func start_waiting():
 	waitingTimer.start()
 
+func set_color()->void:
+	var a = colorOptions.keys()
+	a = a[rng.randi() % a.size()]
+	desiredColor = colorOptions.get(a)
+	colorName  = a
+	hexColor  = "#" + desiredColor.to_html(false).to_upper()
+	colorStringOpen = "[color=" + hexColor + "]"
+	colorStringClose  = "[/color]"
+	colorString =  colorStringOpen + colorName + colorStringClose
+
 func start_order():
-	var text : String = "Greetings, Sire. Your most " + colorString + " paint, please... " + colorString + " paint."
-	textTimer.wait_time = 6
+	var text : String = "Hello! I want " + colorString + " paint. " + colorString + " paint."
+	textTimer.wait_time = 4
 	emit_text_signal(text, textTimer.wait_time-1, 0.1, 0.03)
 	textTimer.start()
 
@@ -180,13 +231,13 @@ func respond_to_color(judge_color : Color) -> void:
 	elif colorScore < 50:
 		emit_text_signal("[center]Looks pretty good![/center]", 3, 0.1, 0.02)
 	elif colorScore < 100:
-		emit_text_signal("[center]Pretty close to ![/center]", 3, 0.1, 0.02)
+		emit_text_signal("[center]Pretty close to " + colorString + "![/center]", 3, 0.1, 0.02)
 	elif colorScore < 130:
 		emit_text_signal("[center]I guess this will do![/center]", 3, 0.1, 0.02)
 	elif colorScore < 150:
 		emit_text_signal("[center]Maybe that is mine?[/center]", 3, 0.1, 0.02)
 	elif colorScore < 180:
-		emit_text_signal("[center]I hope that isn't mine.[/center]", 3, 0.1, 0.02)
+		emit_text_signal("[center]I hope that isn't mine. Is that " + colorString + "?[/center]", 3, 0.1, 0.02)
 	elif colorScore < 200:
 		emit_text_signal("[center]That is NOT " + colorString + ".[/center]", 3, 0.1, 0.02)
 
@@ -218,19 +269,21 @@ func get_score_send_to_UI() -> void:
 	if colorScore == 0:
 		colorDollars = 10
 	elif colorScore < 50:
-		colorDollars = 7.50
+		colorDollars = 8
 	elif colorScore < 100:
-		colorDollars = 5.00
+		colorDollars = 7
 	elif colorScore < 130:
-		colorDollars = 3.50
+		colorDollars = 5
 	elif colorScore < 150:
-		colorDollars = 1.50
+		colorDollars = 4
 	elif colorScore < 180:
 		colorDollars = 0
 	elif colorScore < 200:
-		colorDollars = -1.00
+		colorDollars = 2
 	elif colorScore < 250:
-		colorDollars = -2.00
+		colorDollars = 1
+	else:
+		0
 	if paintCan.tooMuchPaint:
 		sprayDeduction = -2.00
 	if paintCan.tooShaken:
@@ -241,6 +294,9 @@ func get_score_send_to_UI() -> void:
 func set_state_to_leave_and_go() -> void:
 	_state = States.LEAVE
 	emit_signal("customerLeave",self)
+
+func remind_color():
+	emit_text_signal("[center]" + colorString + ".[/center]", 2, 0.1, 0.02)
 
 func _on_WaitingTimer_timeout():
 	match _state:
@@ -282,7 +338,12 @@ func _on_TalkingZone_body_exited(body):
 			keyPressSprite.visible = false
 			keyPressAnimator.stop()
 			ready_to_give_order = false
-			
+
+func play_money_continue () -> void:
+	keyPressAnimator.play("SellIdle")
+
+func play_question_continue () -> void:
+	keyPressAnimator.play("QuestionIdle")
 
 func _on_ResponseTimer_timeout():
 	_state = States.START_ORDER

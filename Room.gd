@@ -19,6 +19,7 @@ signal createCustomerTextSignals(customer_node)
 export (PackedScene) var customerScene
 
 var activeCustomers : Array = []
+var rng = RandomNumberGenerator.new()
 
 
 func _ready():
@@ -29,6 +30,7 @@ func _ready():
 	connect_workers()
 	spawn_customer()
 	spawnTimer.start()
+	rng.randomize()
 
 func connect_paint_cubbies() -> void:
 	var cubbyCount : int = 0
@@ -46,8 +48,6 @@ func connect_paint_machines() -> void:
 	paintMachineNodes = get_tree().get_nodes_in_group("PaintMachine")
 	while machineCount < paintMachineNodes.size():
 		var machineNode : Node2D = paintMachineNodes[machineCount]
-		#machineNode.connect("playerNearEmptyMachine", self, "_mark_player_near_empty_machine")
-		#machineNode.connect("playerNearLoadedMachine", self, "_mark_player_near_loaded_machine")
 		machineNode.connect("playerFarFromPaintMachine", self, "_mark_player_far_from_machine")
 		machineCount += 1
 
@@ -67,8 +67,8 @@ func connect_paint_shakers() -> void:
 	paintShakerNodes = get_tree().get_nodes_in_group("PaintShaker")
 	while paintShakerCount < paintShakerNodes.size():
 		var paintShakerNode : Node2D = paintShakerNodes[paintShakerCount]
-		paintShakerNode.connect("playerNearEmptyShaker", self, "_mark_player_near_empty_shaker")
-		paintShakerNode.connect("playerNearLoadedShaker", self, "_mark_player_near_loaded_shaker")
+		#paintShakerNode.connect("playerNearEmptyShaker", self, "_mark_player_near_empty_shaker")
+		#paintShakerNode.connect("playerNearLoadedShaker", self, "_mark_player_near_loaded_shaker")
 		paintShakerNode.connect("playerFarFromShaker", self, "_mark_player_far_from_shaker")
 		paintShakerCount += 1
 
@@ -80,23 +80,15 @@ func connect_workers() -> void:
 		var workerNode : KinematicBody2D = workerNodes[workerCount]
 		workerNode.connect("canInteractCubby", self, "_mark_cubby_interactable")
 		workerNode.connect("disconnectFromCubbies", self, "_disconnect_from_cubbies")
-		#workerNode.connect("canInteractPaintMachine", self, "_mark_machine_interactable")
 		workerNode.connect("interactWithPaintMachine", self, "_interact_with_paint_machine")
 		workerNode.connect("interactWithHammerStation", self, "_start_interact_with_hammer_station")
 		workerNode.connect("canInteractHammerStation", self, "_mark_hammer_station_interactable")
 		workerNode.connect("checkSwingCount", self, "_check_swing_count_and_see_if_done")
-		workerNode.connect("canInteractShaker", self, "_mark_shaker_interactable")
+		#workerNode.connect("canInteractShaker", self, "_mark_shaker_interactable")
 		workerNode.connect("interactWithShaker", self, "_interact_with_shaker")
 		workerCount += 1
 
-#func remove_worker_from_machine_arrays(player_node : KinematicBody2D) -> void:
-#	if player_node.nearbyPaintMachine.size() > 0: #Emit signal to remove work from all machines, always
-#		var machineCount : int = 0
-#		while machineCount < player_node.nearbyPaintMachine.size():
-#			var machineNode : Node2D = player_node.nearbyPaintMachine[machineCount]
-#			machineNode.remove_from_machine_can_press(player_node)
-#			machineCount += 1
-#		player_node.nearbyPaintMachine.clear()
+
 
 func remove_worker_from_hammer_station_arrays(player_node : KinematicBody2D) -> void:
 	if player_node.nearbyHammerStation.size() > 0: #Emit signal to remove work from all machines, always
@@ -150,17 +142,9 @@ func _mark_player_far_from_cubby(player_node :KinematicBody2D, cubby_node):
 func _mark_cubby_interactable(player_node :KinematicBody2D, cubby_node):
 	cubby_node.add_worker_to_nearby(player_node)
 
-#func _mark_player_near_empty_machine(player_node : KinematicBody2D, machine_node):
-#	player_node.mark_empty_machine_nearby(machine_node)
-	
-#func _mark_player_near_loaded_machine(player_node : KinematicBody2D, machine_node):
-#	player_node.mark_loaded_machine_nearby(machine_node)
 
 func _mark_player_far_from_machine(player_node :KinematicBody2D, machine_node):
 	player_node.mark_machine_far(machine_node)
-
-#func _mark_machine_interactable(player_node :KinematicBody2D, machine_node):
-#	machine_node.add_worker_to_nearby(player_node)
 
 func _mark_player_near_to_hammer_station(player_node : KinematicBody2D, hammer_station_node : Node2D):
 	player_node.mark_hammer_station_nearby(hammer_station_node)
@@ -178,8 +162,10 @@ func _disconnect_from_cubbies(player_node : KinematicBody2D, cubby_array : Array
 
 func _interact_with_paint_machine(player_node : KinematicBody2D, machine_node : Node2D) -> void:
 	#remove_worker_from_machine_arrays(player_node)
-	if machine_node.currentPaintBucket: #If Machine already has a bucket
+	if machine_node.currentPaintBucket and machine_node.currentPaintBucket.isFilled: #If Machine already has a bucket
 		move_filled_paint_can_from_machine_to_worker(player_node, machine_node)
+	elif machine_node.currentPaintBucket:
+		emit_signal("createPaintMachineUI",player_node, machine_node) 
 	else:
 		move_empty_paint_can_from_worker_to_machine(player_node, machine_node)
 
@@ -221,17 +207,17 @@ func move_paint_can_from_hammer_station_to_worker(player_node : KinematicBody2D,
 	hammer_station.remove_child(paintCanNode)
 	player_node.move_paint_can_from_hammer_station_to_worker(paintCanNode)
 
-func _mark_player_near_empty_shaker(player_node : KinematicBody2D, shaker_node):
-	player_node.mark_empty_shaker_nearby(shaker_node)
+#func _mark_player_near_empty_shaker(player_node : KinematicBody2D, shaker_node):
+#	player_node.mark_empty_shaker_nearby(shaker_node)
 	
-func _mark_player_near_loaded_shaker(player_node : KinematicBody2D, shaker_node):
-	player_node.mark_loaded_shaker_nearby(shaker_node)
+#func _mark_player_near_loaded_shaker(player_node : KinematicBody2D, shaker_node):
+#	player_node.mark_loaded_shaker_nearby(shaker_node)
 
 func _mark_player_far_from_shaker(player_node :KinematicBody2D, shaker_node):
 	player_node.mark_shaker_far(shaker_node)
 
-func _mark_shaker_interactable(player_node :KinematicBody2D, shaker_node):
-	shaker_node.add_worker_to_nearby(player_node)
+#func _mark_shaker_interactable(player_node :KinematicBody2D, shaker_node):
+#	shaker_node.add_worker_to_nearby(player_node)
 
 func _interact_with_shaker(player_node : KinematicBody2D, shaker_node : Node2D) -> void:
 	remove_worker_from_shaker_arrays(player_node)
@@ -308,10 +294,16 @@ func _set_leave_destination(customer_id : KinematicBody2D) -> void:
 	var new_destination : Vector2 = spawnlocation.position
 	navigateCustomer(customer_id, new_destination)
 	activeCustomers.erase(customer_id)
+	for child in deskspots.get_children():
+		if child.assignedCustomer == customer_id:
+			child.assignedCustomer = null
 
 func _on_SpawnTimer_timeout():
 	if activeCustomers.size() < 5:
+		spawnTimer.wait_time = rng.randi_range(14,25)
 		spawn_customer()
+	else:
+		spawnTimer.wait_time = 8
 
 func _on_CustomerSummonZone_body_entered(body):
 	var deskPosition : Vector2
@@ -319,7 +311,7 @@ func _on_CustomerSummonZone_body_entered(body):
 		if body.currentBucketNode.shaken:
 			body.ask_about_color(body.currentBucketNode.paintEndColor)
 	for child in deskspots.get_children():
-		if child.assignedCustomer:
+		if child.assignedCustomer != null:
 			var customer_node : KinematicBody2D = child.assignedCustomer
 			if customer_node._state == customer_node.States.MEANDER:
 				navigateCustomer(customer_node,child.position)
@@ -329,11 +321,10 @@ func _on_CustomerSummonZone_body_entered(body):
 					if body.currentBucketNode.shaken:
 						customer_node.respond_to_color(body.currentBucketNode.paintEndColor)
 
-
 func _on_CustomerSummonZone_body_exited(_body):
 	var deskPosition : Vector2
 	for child in deskspots.get_children():
-		if child.assignedCustomer:
+		if child.assignedCustomer != null:
 			var customer_node : KinematicBody2D = child.assignedCustomer
 			if customer_node._state == customer_node.States.SUMMONED_WAITING or customer_node._state == customer_node.States.SUMMONED:
 				customer_node.reset_to_meander()

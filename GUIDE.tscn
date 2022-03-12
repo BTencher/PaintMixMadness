@@ -1,0 +1,94 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://Art Assets/fonts/Thirteen-Pixel-Fonts.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://GUIDE.gd" type="Script" id=2]
+[ext_resource path="res://Art Assets/UI Assets/Guide/Slide2.png" type="Texture" id=3]
+[ext_resource path="res://Art Assets/UI Assets/Guide/scene5.png" type="Texture" id=4]
+[ext_resource path="res://Art Assets/UI Assets/Guide/scene7.png" type="Texture" id=5]
+[ext_resource path="res://Art Assets/UI Assets/Guide/Slide.png" type="Texture" id=6]
+[ext_resource path="res://Art Assets/UI Assets/Guide/scene4.png" type="Texture" id=7]
+[ext_resource path="res://Art Assets/UI Assets/Guide/scene6.png" type="Texture" id=8]
+[ext_resource path="res://Art Assets/UI Assets/Guide/scene3.png" type="Texture" id=9]
+
+[sub_resource type="DynamicFont" id=1]
+size = 50
+font_data = ExtResource( 1 )
+
+[sub_resource type="Theme" id=2]
+default_font = SubResource( 1 )
+
+[node name="GUIDE" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = SubResource( 2 )
+script = ExtResource( 2 )
+
+[node name="Screen1" type="TextureRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource( 6 )
+
+[node name="Screen2" type="TextureRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource( 3 )
+
+[node name="Screen3" type="TextureRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource( 9 )
+
+[node name="Screen4" type="TextureRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource( 7 )
+
+[node name="Screen5" type="TextureRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource( 4 )
+
+[node name="Screen6" type="TextureRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource( 8 )
+
+[node name="Screen7" type="TextureRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource( 5 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -2.0
+margin_top = 1070.0
+margin_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="PREVIOUS" type="Button" parent="HBoxContainer"]
+margin_left = 197.0
+margin_right = 597.0
+margin_bottom = 110.0
+rect_min_size = Vector2( 400, 0 )
+text = "PREVIOUS"
+
+[node name="NEXT" type="Button" parent="HBoxContainer"]
+margin_left = 601.0
+margin_right = 1001.0
+margin_bottom = 110.0
+rect_min_size = Vector2( 400, 0 )
+text = "NEXT"
+
+[node name="COMPLETE" type="Button" parent="HBoxContainer"]
+margin_left = 1005.0
+margin_right = 1405.0
+margin_bottom = 110.0
+rect_min_size = Vector2( 400, 0 )
+text = "COMPLETE"
+
+[connection signal="pressed" from="HBoxContainer/PREVIOUS" to="." method="_on_PREVIOUS_pressed"]
+[connection signal="pressed" from="HBoxContainer/NEXT" to="." method="_on_NEXT_pressed"]
+[connection signal="pressed" from="HBoxContainer/COMPLETE" to="." method="_on_COMPLETE_pressed"]

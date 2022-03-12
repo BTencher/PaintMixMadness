@@ -95,7 +95,7 @@ bbcode_text = "[center]$0.00[/center]"
 text = "$0.00"
 
 [node name="ClockTimer" type="Timer" parent="."]
-wait_time = 5.0
+wait_time = 4.0
 autostart = true
 
 [node name="MoneyParticles" type="Particles2D" parent="."]

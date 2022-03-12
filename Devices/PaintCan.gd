@@ -17,6 +17,7 @@ var lidHits : int = 0
 onready var paintCanInside : Sprite = $PaintCanInside
 onready var paintCanBodyClose: Sprite = $PaintCanBodyClose
 onready var paintCanCloseLabel : Sprite = $PaintCanCloseLabel
+onready var dripping : Particles2D = $Dripping
 
 func _ready():
 	update_paint_colors(temporary_color)
@@ -32,6 +33,11 @@ func update_current_color(int_percent_complete : int) -> void:
 		temporary_color = paintEndColor
 		isFilled = true
 		update_paint_colors(temporary_color)
+
+func paint_can_full():
+	dripping.modulate = paintEndColor
+	dripping.emitting = true
+	tooMuchPaint = true
 
 func update_paint_colors(v_currentPaintColor : Color) -> void:
 	paintCanInside.modulate = v_currentPaintColor

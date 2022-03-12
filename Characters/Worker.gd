@@ -12,6 +12,7 @@ onready var animationPlayer : AnimationPlayer = $AnimationPlayer
 onready var animationTree : AnimationTree = $AnimationTree
 onready var animationState = animationTree.get("parameters/playback")
 onready var textalogPosition : Position2D = $TexalogPosition
+onready var responseTimer : Timer = $ResponseTimer
 
 # An enum allows us to keep track of valid states.
 enum States {EMPTY_HANDS, CAN_PICK_UP, PICKING_UP_CAN, EMPTY_PAINT, CAN_USE_MACHINE, USING_MACHINE, OPEN_PAINT, CAN_USE_HAMMER, USING_HAMMER, CLOSE_PAINT, CAN_USE_SHAKER,USING_SHAKER,DONE_PAINT,READY_GIVE}
@@ -32,7 +33,12 @@ var currentHammerStationNode : Node2D = null
 var currentShakerNode : Node2D = null
 var currentCustomer : KinematicBody2D = null
 
+var canAskQuestion : bool = false
+var canDeletePaint : bool = false
+
 var textalogNode : Position2D = null
+
+var trashcanNode : StaticBody2D = null
 
 signal canInteractCubby(this_node, cubby_node)
 signal disconnectFromCubbies(this_node, arrayNearbyCubbies)
@@ -74,13 +80,20 @@ func _physics_process(delta) -> void:
 				_state = States.USING_HAMMER
 				interact_with_hammer_station()
 			States.CAN_USE_SHAKER:
-				print("Interact Start")
 				_state = States.USING_SHAKER
 				interact_with_shaker()
 			States.READY_GIVE:
-				print("Ready?")
 				give_paint_to_customer()
-
+		if canAskQuestion:
+			ask_color_again()
+	if Input.is_action_just_pressed("delete_paint") and canDeletePaint != null and currentBucketNode != null:
+		_state = States.EMPTY_HANDS
+		currentBucketNode.queue_free()
+		currentBucketNode = null
+		canDeletePaint = false
+		if trashcanNode:
+			trashcanNode.animationPlayer.stop()
+			trashcanNode = null
 	match _state:
 		States.EMPTY_HANDS,States.OPEN_PAINT,States.CAN_PICK_UP,States.EMPTY_PAINT,States.CAN_USE_MACHINE,States.OPEN_PAINT,States.CAN_USE_HAMMER,States.CLOSE_PAINT,States.CAN_USE_SHAKER,States.DONE_PAINT,States.READY_GIVE:
 			if !animationTree.active == true:
@@ -135,13 +148,13 @@ func move_paint_can() -> void:
 		currentBucketNode.position = bucketPosition.position
 
 func bring_paint_can_to_front() -> void:
-	if currentBucketNode:
+	if currentBucketNode in self.get_children():
 		move_child(currentBucketNode,get_child_count()-1)
 	else:
 		print("bring_paint_can_to_front can for some reason without a bucket.")
 
 func bring_paint_can_to_back() -> void:
-	if self.currentBucketNode:
+	if currentBucketNode in self.get_children():
 		move_child(currentBucketNode,0)
 	else:
 		print("bring_paint_can_to_back can for some reason without a bucket.")
@@ -164,33 +177,19 @@ func mark_cubby_far(cubbyID : StaticBody2D) -> void:
 	if nearbyCubbies.size() == 0 and _state == States.CAN_PICK_UP:
 		_state = States.EMPTY_HANDS
 
-#func mark_empty_machine_nearby(machine_id : Node2D) -> void:
-#	nearbyPaintMachine.append(machine_id)
-#	if nearbyPaintMachine.size() > 0 and _state == States.EMPTY_PAINT:
-#		_state = States.CAN_USE_MACHINE
-#		emit_signal("canInteractPaintMachine",self,machine_id)
 
-#func mark_loaded_machine_nearby(machine_id : Node2D) -> void:
-#	nearbyPaintMachine.append(machine_id)
-#	if nearbyPaintMachine.size() > 0 and _state == States.EMPTY_HANDS:
-#		_state = States.CAN_USE_MACHINE
-#	if _state == States.CAN_USE_MACHINE and nearbyPaintMachine.has(machine_id):
-#		emit_signal("canInteractPaintMachine",self,machine_id)
-		
 func mark_machine_far(machine_id : Node2D) -> void:
 	nearbyPaintMachine.erase(machine_id)
 	if nearbyPaintMachine.size() == 0 and _state == States.CAN_USE_MACHINE:
 		if currentBucketNode:
 			if currentBucketNode.hasLid:
 				_state = States.CLOSE_PAINT
-				print("Probably never called")
 			elif currentBucketNode.isFilled:
 				_state = States.OPEN_PAINT
 			else:
 				_state = States.EMPTY_PAINT
 		else:
 			_state = States.EMPTY_HANDS
-			print("Make Empty Hands?")
 
 func interact_with_paint_machine() -> void:
 	currentMachineNode = nearbyPaintMachine[0] #Mark machine we are using
@@ -210,7 +209,6 @@ func release_worker_from_machine() -> void:
 	currentBucketNode = null
 	animationPlayer.stop()
 	animationTree.active = true
-	print("release from machine")
 
 func move_paint_can_from_machine_to_worker(paintCanNode : Node2D) -> void:
 	currentBucketNode = paintCanNode
@@ -259,20 +257,20 @@ func update_worker_state_to_filled_paint():
 	currentHammerStationNode = null
 	nearbyHammerStation.clear()
 
-func mark_empty_shaker_nearby(shaker_id : Node2D) -> void:
-	nearbyShaker.append(shaker_id)
-	currentShakerNode = shaker_id
-	if _state == States.CLOSE_PAINT:
-		_state = States.CAN_USE_SHAKER
-		emit_signal("canInteractShaker",self,shaker_id)
+#func mark_empty_shaker_nearby(shaker_id : Node2D) -> void:
+#	nearbyShaker.append(shaker_id)
+#	currentShakerNode = shaker_id
+#	if _state == States.CLOSE_PAINT:
+#		_state = States.CAN_USE_SHAKER
+#		emit_signal("canInteractShaker",self,shaker_id)
 
-func mark_loaded_shaker_nearby(shaker_id : Node2D) -> void:
-	nearbyShaker.append(shaker_id)
-	currentShakerNode = shaker_id
-	if _state == States.EMPTY_HANDS:
-		_state = States.CAN_USE_SHAKER
-	if _state == States.CAN_USE_SHAKER and nearbyShaker.has(shaker_id):
-		emit_signal("canInteractShaker",self,shaker_id)
+#func mark_loaded_shaker_nearby(shaker_id : Node2D) -> void:
+#	nearbyShaker.append(shaker_id)
+#	currentShakerNode = shaker_id
+#	if _state == States.EMPTY_HANDS:
+#		_state = States.CAN_USE_SHAKER
+#	if _state == States.CAN_USE_SHAKER and nearbyShaker.has(shaker_id):
+#		emit_signal("canInteractShaker",self,shaker_id)
 
 func interact_with_shaker() -> void:
 	#currentShakerNode = nearbyShaker[0] #Mark machine we are using
@@ -288,7 +286,6 @@ func mark_shaker_far(shaker_id : Node2D) -> void:
 				_state = States.DONE_PAINT
 			elif currentBucketNode.hasLid:
 				_state = States.CLOSE_PAINT
-				print("Probably never called")
 			elif currentBucketNode.isFilled:
 				_state = States.OPEN_PAINT
 			else:
@@ -301,7 +298,6 @@ func move_paint_can_from_shaker_to_worker(paintCanNode : Node2D) -> void:
 	add_child(paintCanNode)
 	bring_paint_can_to_front()
 	_state = States.DONE_PAINT
-	print(_state)
 	#animationTree.active = true
 
 func release_worker_from_paint_bucket_to_shaker():
@@ -311,26 +307,67 @@ func release_worker_from_paint_bucket_to_shaker():
 func ask_about_color(finished_color : Color):
 	var color_hex : String =  "#"+finished_color.to_html(false).to_upper()
 	emit_text_signal("Does this [color=" + color_hex + "] paint [/color] look right?", 3, 0.3, 0.04)
+
+func ask_color_again() -> void:
+	emit_text_signal("What color?", 1.5, 0.2, 0.02)
+	responseTimer.start()
 	
 
 func emit_text_signal(text:String, time_length:float, fade_length:float, speed:float):
 	emit_signal("createTextalog", self, textalogNode, text, time_length, fade_length, speed)
 
 func _on_PaintGiveArea_body_entered(body):
-	print(_state)
-	if _state == States.DONE_PAINT:
-		match body._state:
-			body.States.MEANDER, body.States.SUMMONED, body.States.SUMMONED_WAITING:
-				currentCustomer = body
-				_state = States.READY_GIVE
+	match _state:
+		States.DONE_PAINT, States.READY_GIVE:
+			match body._state:
+				body.States.MEANDER, body.States.SUMMONED, body.States.SUMMONED_WAITING:
+					if currentCustomer != null:
+						if currentCustomer != body:
+							currentCustomer.keyPressAnimator.play("SellHide")
+					currentCustomer = body
+					_state = States.READY_GIVE
+					body.keyPressAnimator.play("SellLoad")
+				
+		_:
+			match body._state:
+				body.States.MEANDER, body.States.SUMMONED, body.States.SUMMONED_WAITING:
+					if currentCustomer != null:
+						if currentCustomer != body:
+							currentCustomer.keyPressAnimator.play("QuestionHide")
+					currentCustomer = body
+					canAskQuestion = true
+					body.keyPressAnimator.play("QuestionLoad")
+				
+
+func _on_PaintGiveArea_body_exited(body):
+	if _state == States.READY_GIVE or _state == States.DONE_PAINT:
+		if currentCustomer == body:
+			currentCustomer = null
+			_state = States.DONE_PAINT
+			body.keyPressAnimator.play("SellHide")
+		else: 
+			body.keyPressAnimator.play("SellHide")
+	else:
+		if currentCustomer == body:
+			currentCustomer = null
+			canAskQuestion = false
+			body.keyPressAnimator.play("QuestionHide")
+		else:
+			body.keyPressAnimator.play("QuestionHide")
 
 func give_paint_to_customer() -> void:
-	currentBucketNode.visible = false
-	var paintCanNode : Node2D = currentBucketNode
-	currentBucketNode = null
-	remove_child(paintCanNode)
-	currentCustomer.add_child(paintCanNode)
-	_state = States.EMPTY_HANDS
-	currentCustomer.paintCan = paintCanNode
-	print("give to customer")
-	currentCustomer.judge_experience_and_leave()
+	if currentCustomer != null:
+		match currentCustomer._state:
+			currentCustomer.States.MEANDER, currentCustomer.States.SUMMONED, currentCustomer.States.SUMMONED_WAITING:
+				currentBucketNode.visible = false
+				var paintCanNode : Node2D = currentBucketNode
+				currentBucketNode = null
+				remove_child(paintCanNode)
+				currentCustomer.add_child(paintCanNode)
+				_state = States.EMPTY_HANDS
+				currentCustomer.paintCan = paintCanNode
+				currentCustomer.judge_experience_and_leave()
+
+func _on_ResponseTimer_timeout():
+	if currentCustomer != null:
+		currentCustomer.remind_color()

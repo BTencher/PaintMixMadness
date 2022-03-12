@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=2]
+[gd_scene load_steps=30 format=2]
 
 [ext_resource path="res://TileMap.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Art Assets/regularbox.png" type="Texture" id=2]
@@ -11,6 +11,7 @@
 [ext_resource path="res://Devices/PaintShaker.tscn" type="PackedScene" id=9]
 [ext_resource path="res://Art Assets/SwatchesStation.png" type="Texture" id=10]
 [ext_resource path="res://OrderLocation.tscn" type="PackedScene" id=11]
+[ext_resource path="res://Devices/Trashcan.tscn" type="PackedScene" id=12]
 [ext_resource path="res://Characters/CustomerTemplate.tscn" type="PackedScene" id=14]
 
 [sub_resource type="ConvexPolygonShape2D" id=5]
@@ -63,6 +64,388 @@ points = PoolVector2Array( 2, 24, 16, 17, 30, 25, 16, 31 )
 } ]
 1/z_index = 0
 
+[sub_resource type="Animation" id=11]
+resource_name = "KeyPress"
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("KeyPressSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 1, 3 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("KeyPressSprite:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+
+[sub_resource type="Animation" id=12]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("KeyPressSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("KeyPressSprite:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ true ]
+}
+
+[sub_resource type="Animation" id=13]
+resource_name = "Idle"
+length = 0.1
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("PaintShakerSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("PaintShakerFrontSprite:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+
+[sub_resource type="Animation" id=14]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("PaintShakerSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("PaintShakerFrontSprite:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("PaintCanPosition:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 2, -8 ) ]
+}
+
+[sub_resource type="Animation" id=15]
+resource_name = "Shaking"
+length = 0.25
+loop = true
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("PaintShakerFrontSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3, 4 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("PaintShakerSprite:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3, 4 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("PaintCanPosition:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1, -38 ), Vector2( 2, -38 ), Vector2( 0, -38 ), Vector2( -1, -38 ), Vector2( 1, -38 ) ]
+}
+tracks/3/type = "method"
+tracks/3/path = NodePath(".")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"values": [ {
+"args": [  ],
+"method": "update_paint_can_during_shaking"
+}, {
+"args": [  ],
+"method": "update_paint_can_during_shaking"
+}, {
+"args": [  ],
+"method": "update_paint_can_during_shaking"
+}, {
+"args": [  ],
+"method": "update_paint_can_during_shaking"
+}, {
+"args": [  ],
+"method": "update_paint_can_during_shaking"
+} ]
+}
+
+[sub_resource type="Animation" id=16]
+resource_name = "KeyPress"
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("KeyPressSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 1, 3 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("KeyPressSprite:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+
+[sub_resource type="Animation" id=17]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("KeyPressSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("KeyPressSprite:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ true ]
+}
+
+[sub_resource type="Animation" id=18]
+resource_name = "Idle"
+length = 0.1
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("PaintShakerSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("PaintShakerFrontSprite:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+
+[sub_resource type="Animation" id=19]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("PaintShakerSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("PaintShakerFrontSprite:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("PaintCanPosition:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 2, -8 ) ]
+}
+
+[sub_resource type="Animation" id=20]
+resource_name = "Shaking"
+length = 0.25
+loop = true
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("PaintShakerFrontSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3, 4 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("PaintShakerSprite:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3, 4 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("PaintCanPosition:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1, -38 ), Vector2( 2, -38 ), Vector2( 0, -38 ), Vector2( -1, -38 ), Vector2( 1, -38 ) ]
+}
+tracks/3/type = "method"
+tracks/3/path = NodePath(".")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"values": [ {
+"args": [  ],
+"method": "update_paint_can_during_shaking"
+}, {
+"args": [  ],
+"method": "update_paint_can_during_shaking"
+}, {
+"args": [  ],
+"method": "update_paint_can_during_shaking"
+}, {
+"args": [  ],
+"method": "update_paint_can_during_shaking"
+}, {
+"args": [  ],
+"method": "update_paint_can_during_shaking"
+} ]
+}
+
 [sub_resource type="Curve2D" id=9]
 _data = {
 "points": PoolVector2Array( 0, 0, 0, 0, 45, 265, 0, 0, 0, 0, 105, 260, 0, 0, 0, 0, -10, 230, 0, 0, 0, 0, 20, 175, 0, 0, 0, 0, -15, 210, 0, 0, 0, 0, 35, 185, 0, 0, 0, 0, 5, 215, 0, 0, 0, 0, 55, 195, 0, 0, 0, 0, 25, 225, 0, 0, 0, 0, 70, 200, 0, 0, 0, 0, 45, 235, 0, 0, 0, 0, 85, 210, 0, 0, 0, 0, 65, 260, 0, 0, 0, 0, 115, 230, 0, 0, 0, 0, 10, 235, 0, 0, 0, 0, 30, 230, 0, 0, 0, 0, 30, 250, 0, 0, 0, 0, 85, 255, 0, 0, 0, 0, 15, 200, 0, 0, 0, 0, 55, 225, 0, 0, 0, 0, 115, 240, 0, 0, 0, 0, 100, 215, 0, 0, 0, 0, 65, 210, 0, 0, 0, 0, 30, 215, 0, 0, 0, 0, -15, 195, 0, 0, 0, 0, 25, 185, 0, 0, 0, 0, 110, 255, 0, 0, 0, 0, 50, 185, 0, 0, 0, 0, 95, 225, 0, 0, 0, 0, 125, 240, 0, 0, 0, 0, 40, 195, 0, 0, 0, 0, 55, 235, 0, 0, 0, 0, 40, 225, 0, 0, 0, 0, 20, 215, 0, 0, 0, 0, 45, 180, 0, 0, 0, 0, 0, 235, 0, 0, 0, 0, 10, 180, 0, 0, 0, 0, 30, 180, 0, 0, 0, 0, 55, 270, 0, 0, 0, 0, 50, 230, 0, 0, 0, 0, 65, 250 )
@@ -86,7 +469,7 @@ customerScene = ExtResource( 14 )
 
 [node name="TileMap" parent="YSort/Navigation2D" instance=ExtResource( 1 )]
 position = Vector2( 10, -23 )
-tile_data = PoolIntArray( -65536, 0, 0, -65535, 0, 65538, -65534, 0, 1, -65533, 0, 65536, -65532, 0, 2, -65531, 0, 65538, -65530, 0, 4, -65529, 0, 1, -65528, 0, 1, -65527, 0, 65539, -65526, 0, 65538, -65525, 0, 1, -65524, 0, 65539, -65523, 0, 3, -65522, 0, 0, -65521, 0, 65538, -65520, 0, 3, 0, 0, 65536, 1, 0, 2, 4, 0, 65537, 11, 0, 65539, 12, 0, 65536, 13, 0, 1, 14, 0, 1, 15, 0, 1, 16, 0, 0, 65536, 0, 65539, 65537, 0, 65540, 65540, 0, 65538, 65547, 0, 65538, 65548, 0, 65540, 65549, 0, 1, 65550, 0, 65539, 65551, 0, 65539, 65552, 0, 3, 131072, 0, 0, 131073, 0, 65537, 131076, 0, 3, 131083, 0, 2, 131084, 0, 65540, 131085, 0, 65540, 131086, 0, 65537, 131087, 0, 4, 131088, 0, 2, 131089, 0, 65537, 196608, 0, 1, 196609, 0, 65539, 196612, 0, 4, 196619, 0, 65539, 196620, 0, 65539, 196621, 0, 2, 196622, 0, 65540, 196623, 0, 3, 196624, 0, 4, 196625, 0, 3, 262144, 0, 3, 262145, 0, 65537, 262148, 0, 1, 262155, 0, 65539, 262156, 0, 3, 262157, 0, 65536, 262158, 0, 65540, 262159, 0, 65539, 262160, 0, 4, 262161, 0, 65538, 327680, 0, 65540, 327681, 0, 3, 327682, 0, 2, 327683, 0, 1, 327684, 0, 65538, 327685, 0, 65540, 327686, 0, 3, 327687, 0, 1, 327688, 0, 65537, 327689, 0, 3, 327690, 0, 3, 327691, 0, 65537, 327692, 0, 1, 327693, 0, 65536, 327694, 0, 2, 327695, 0, 65540, 327696, 0, 65537, 327697, 0, 0, 327698, 0, 3, 393216, 0, 1, 393217, 0, 65536, 393218, 0, 65539, 393219, 0, 2, 393220, 0, 65540, 393221, 0, 65537, 393222, 0, 65538, 393223, 0, 65540, 393224, 0, 65536, 393225, 0, 0, 393226, 0, 3, 393227, 0, 65537, 393228, 0, 4, 393229, 0, 65540, 393230, 0, 1, 393231, 0, 65537, 393232, 0, 0, 393233, 0, 2, 393234, 0, 1, 458752, 0, 65538, 458753, 0, 2, 458754, 0, 2, 458755, 0, 65540, 458756, 0, 3, 458757, 0, 65539, 458758, 0, 2, 458759, 0, 1, 458760, 0, 65540, 458761, 0, 65536, 458762, 0, 0, 458763, 0, 0, 458764, 0, 2, 458765, 0, 1, 458766, 0, 65536, 458767, 0, 3, 458768, 0, 65536, 458769, 0, 4, 458770, 0, 65536, 524288, 0, 65536, 524289, 0, 0, 524290, 0, 65540, 524291, 0, 4, 524292, 0, 1, 524293, 0, 65538, 524294, 0, 65536, 524295, 0, 65540, 524296, 0, 65538, 524297, 0, 1, 524298, 0, 65538, 524299, 0, 2, 524300, 0, 65536, 524301, 0, 65536, 524302, 0, 0, 524303, 0, 3, 524304, 0, 0, 524305, 0, 65539, 524306, 0, 4, 589824, 0, 3, 589825, 0, 0, 589826, 0, 1, 589827, 0, 4, 589828, 0, 2, 589829, 0, 65536, 589830, 0, 65538, 589831, 0, 1, 589832, 0, 65540, 589833, 0, 2, 589834, 0, 2, 589835, 0, 4, 589836, 0, 1, 589837, 0, 2, 589838, 0, 65540, 589839, 0, 4, 589840, 0, 65536, 589841, 0, 65537, 589842, 0, 1, 655361, 0, 0, 655362, 0, 0, 655363, 0, 3, 655364, 0, 3, 655365, 0, 65536, 655366, 0, 65539, 655367, 0, 65539, 655368, 0, 65538, 655369, 0, 65537, 655370, 0, 65538, 655371, 0, 65537, 655372, 0, 65537, 655373, 0, 65538, 655374, 0, 0, 655375, 0, 65540, 655376, 0, 4, 655377, 0, 0, 655378, 0, 65540, 720898, 0, 1, 720899, 0, 0, 720900, 0, 2, 720901, 0, 0, 720902, 0, 65536, 720903, 0, 65536, 720904, 0, 65538, 720905, 0, 2, 720906, 0, 4, 720907, 0, 1, 720908, 0, 65536, 720909, 0, 4, 720910, 0, 4, 720911, 0, 65539, 786439, 0, 4, 786440, 0, 2, 786441, 0, 65540, 786442, 0, 1, 786443, 0, 3 )
+tile_data = PoolIntArray( -262139, 0, 0, -262138, 0, 0, -262137, 0, 0, -262136, 0, 0, -262135, 0, 0, -262134, 0, 0, -262133, 0, 0, -196604, 0, 0, -196603, 0, 0, -196602, 0, 0, -196601, 0, 0, -196600, 0, 0, -196599, 0, 0, -196598, 0, 0, -196597, 0, 0, -196596, 0, 0, -131069, 0, 0, -131068, 0, 0, -131067, 0, 0, -131066, 0, 0, -131065, 0, 0, -131064, 0, 0, -131063, 0, 0, -131062, 0, 0, -131061, 0, 0, -131060, 0, 0, -65536, 0, 0, -65535, 0, 65538, -65534, 0, 1, -65533, 0, 65536, -65532, 0, 2, -65525, 0, 1, -65524, 0, 65539, -65523, 0, 3, -65522, 0, 0, -65521, 0, 65538, -65520, 0, 3, 0, 0, 65536, 1, 0, 2, 4, 0, 65537, 11, 0, 65539, 12, 0, 65536, 13, 0, 1, 14, 0, 1, 15, 0, 1, 16, 0, 0, 65536, 0, 65539, 65537, 0, 65540, 65540, 0, 65538, 65547, 0, 65538, 65548, 0, 65540, 65549, 0, 1, 65550, 0, 65539, 65551, 0, 65539, 65552, 0, 3, 131072, 0, 0, 131073, 0, 65537, 131076, 0, 3, 131083, 0, 2, 131084, 0, 65540, 131085, 0, 65540, 131086, 0, 65537, 131087, 0, 4, 131088, 0, 2, 131089, 0, 65537, 196608, 0, 1, 196609, 0, 65539, 196612, 0, 4, 196619, 0, 65539, 196620, 0, 65539, 196621, 0, 2, 196622, 0, 65540, 196623, 0, 3, 196624, 0, 4, 196625, 0, 3, 262144, 0, 3, 262145, 0, 65537, 262148, 0, 1, 262155, 0, 65539, 262156, 0, 3, 262157, 0, 65536, 262158, 0, 65540, 262159, 0, 65539, 262160, 0, 4, 262161, 0, 65538, 327680, 0, 65540, 327681, 0, 3, 327682, 0, 2, 327683, 0, 1, 327684, 0, 65538, 327685, 0, 65540, 327686, 0, 3, 327687, 0, 1, 327688, 0, 65537, 327689, 0, 3, 327690, 0, 3, 327691, 0, 65537, 327692, 0, 1, 327693, 0, 65536, 327694, 0, 2, 327695, 0, 65540, 327696, 0, 65537, 327697, 0, 0, 327698, 0, 3, 393216, 0, 1, 393217, 0, 65536, 393218, 0, 65539, 393219, 0, 2, 393220, 0, 65540, 393221, 0, 65537, 393222, 0, 65538, 393223, 0, 65540, 393224, 0, 65536, 393225, 0, 0, 393226, 0, 3, 393227, 0, 65537, 393228, 0, 4, 393229, 0, 65540, 393230, 0, 1, 393231, 0, 65537, 393232, 0, 0, 393233, 0, 2, 393234, 0, 1, 458752, 0, 65538, 458753, 0, 2, 458754, 0, 2, 458755, 0, 65540, 458756, 0, 3, 458757, 0, 65539, 458758, 0, 2, 458759, 0, 1, 458760, 0, 65540, 458761, 0, 65536, 458762, 0, 0, 458763, 0, 0, 458764, 0, 2, 458765, 0, 1, 458766, 0, 65536, 458767, 0, 3, 458768, 0, 65536, 458769, 0, 4, 458770, 0, 65536, 524288, 0, 65536, 524289, 0, 0, 524290, 0, 65540, 524291, 0, 4, 524292, 0, 1, 524293, 0, 65538, 524294, 0, 65536, 524295, 0, 65540, 524296, 0, 65538, 524297, 0, 1, 524298, 0, 65538, 524299, 0, 2, 524300, 0, 65536, 524301, 0, 65536, 524302, 0, 0, 524303, 0, 3, 524304, 0, 0, 524305, 0, 65539, 524306, 0, 4, 589824, 0, 3, 589825, 0, 0, 589826, 0, 1, 589827, 0, 4, 589828, 0, 2, 589829, 0, 65536, 589830, 0, 65538, 589831, 0, 1, 589832, 0, 65540, 589833, 0, 2, 589834, 0, 2, 589835, 0, 4, 589836, 0, 1, 589837, 0, 2, 589838, 0, 65540, 589839, 0, 4, 589840, 0, 65536, 589841, 0, 65537, 589842, 0, 1, 655361, 0, 0, 655362, 0, 0, 655363, 0, 3, 655364, 0, 3, 655365, 0, 65536, 655366, 0, 65539, 655367, 0, 65539, 655368, 0, 65538, 655369, 0, 65537, 655370, 0, 65538, 655371, 0, 65537, 655372, 0, 65537, 655373, 0, 65538, 655374, 0, 0, 655375, 0, 65540, 655376, 0, 4, 655377, 0, 0, 655378, 0, 65540, 720898, 0, 1, 720899, 0, 0, 720900, 0, 2, 720901, 0, 0, 720902, 0, 65536, 720903, 0, 65536, 720904, 0, 65538, 720905, 0, 2, 720906, 0, 4, 720907, 0, 1, 720908, 0, 65536, 720909, 0, 4, 720910, 0, 4, 720911, 0, 65539, 786439, 0, 4, 786440, 0, 2, 786441, 0, 65540, 786442, 0, 1, 786443, 0, 3 )
 
 [node name="Line2D" type="Line2D" parent="YSort"]
 
@@ -99,32 +482,83 @@ cell_tile_origin = 2
 cell_y_sort = true
 collision_mask = 2
 format = 1
-tile_data = PoolIntArray( -196602, 1, 0, -196601, 1, 0, -196600, 1, 0, -196599, 1, 0, -196598, 1, 0, -196597, 1, 0, -196596, 1, 0, -196595, 1, 0, -196594, 1, 0, -196593, 1, 0, -131066, 1, 0, -131057, 1, 0, -65521, 1, 0, 15, 1, 0, 65551, 1, 0, 131078, 1, 0, 131087, 1, 0, 196614, 1, 0, 196623, 1, 0, 262150, 0, 0, 262151, 0, 0, 262152, 0, 0, 262153, 0, 0, 262154, 0, 0, 262155, 0, 0, 262156, 0, 0, 262157, 0, 0, 262158, 0, 0, 262159, 1, 0 )
+tile_data = PoolIntArray( -262138, 1, 0, -262137, 0, 0, -262136, 0, 0, -262135, 0, 0, -262134, 0, 0, -262133, 0, 0, -262132, 0, 0, -262131, 0, 0, -262130, 0, 0, -262129, 1, 0, -196602, 1, 0, -196593, 1, 0, -131066, 1, 0, -131057, 1, 0, -65521, 1, 0, 15, 1, 0, 65551, 1, 0, 131078, 1, 0, 131087, 1, 0, 196614, 1, 0, 196623, 1, 0, 262150, 0, 0, 262151, 0, 0, 262152, 0, 0, 262153, 0, 0, 262154, 0, 0, 262155, 0, 0, 262156, 0, 0, 262157, 0, 0, 262158, 0, 0, 262159, 1, 0 )
 
 [node name="SwatchStation" type="Sprite" parent="YSort"]
 position = Vector2( 4, 47 )
 texture = ExtResource( 10 )
 
 [node name="PaintMachine" parent="YSort" instance=ExtResource( 5 )]
-position = Vector2( 256, 135 )
+position = Vector2( 240, 115 )
 
 [node name="PaintMachine2" parent="YSort" instance=ExtResource( 5 )]
-position = Vector2( 224, 119 )
+position = Vector2( 210, 95 )
 
 [node name="BucketCubby" parent="YSort" instance=ExtResource( 6 )]
 position = Vector2( 115, 100 )
 
 [node name="HammerStation" parent="YSort" instance=ExtResource( 8 )]
-position = Vector2( 280, 169 )
+position = Vector2( 295, 160 )
 
 [node name="Worker" parent="YSort" instance=ExtResource( 3 )]
 position = Vector2( 160, 137 )
 
 [node name="PaintShaker" parent="YSort" instance=ExtResource( 9 )]
-position = Vector2( 212, 212 )
+position = Vector2( 225, 205 )
 
 [node name="PaintShaker2" parent="YSort" instance=ExtResource( 9 )]
-position = Vector2( 245, 195 )
+position = Vector2( 255, 190 )
+
+[node name="PaintMachine3" parent="YSort" instance=ExtResource( 5 )]
+position = Vector2( 270, 130 )
+
+[node name="PaintShaker3" parent="YSort" instance=ExtResource( 9 )]
+position = Vector2( 85, 130 )
+
+[node name="CollisionShape2D" parent="YSort/PaintShaker3/InteractArea" index="0"]
+position = Vector2( 15, 25 )
+
+[node name="KeyPressSprite" parent="YSort/PaintShaker3" index="8"]
+position = Vector2( -10, -55 )
+
+[node name="PaintShaker4" parent="YSort" instance=ExtResource( 9 )]
+position = Vector2( 135, 105 )
+
+[node name="CollisionShape2D" parent="YSort/PaintShaker4/InteractArea" index="0"]
+position = Vector2( 15, 25 )
+
+[node name="KeyPressSprite" parent="YSort/PaintShaker4" index="8"]
+position = Vector2( -10, -55 )
+
+[node name="KeyPressAnimator" parent="YSort/PaintShaker4" index="9"]
+anims/KeyPress = SubResource( 11 )
+anims/RESET = SubResource( 12 )
+
+[node name="ShakingAnimation" parent="YSort/PaintShaker4" index="10"]
+anims/Idle = SubResource( 13 )
+anims/RESET = SubResource( 14 )
+anims/Shaking = SubResource( 15 )
+
+[node name="PaintShaker5" parent="YSort" instance=ExtResource( 9 )]
+position = Vector2( 165, 90 )
+
+[node name="CollisionShape2D" parent="YSort/PaintShaker5/InteractArea" index="0"]
+position = Vector2( 15, 25 )
+
+[node name="KeyPressSprite" parent="YSort/PaintShaker5" index="8"]
+position = Vector2( -10, -55 )
+
+[node name="KeyPressAnimator" parent="YSort/PaintShaker5" index="9"]
+anims/KeyPress = SubResource( 16 )
+anims/RESET = SubResource( 17 )
+
+[node name="ShakingAnimation" parent="YSort/PaintShaker5" index="10"]
+anims/Idle = SubResource( 18 )
+anims/RESET = SubResource( 19 )
+anims/Shaking = SubResource( 20 )
+
+[node name="TrashCan" parent="YSort" instance=ExtResource( 12 )]
+position = Vector2( 170, 185 )
 
 [node name="MeanderPath" type="Path2D" parent="."]
 position = Vector2( 15, 15 )
@@ -143,7 +577,7 @@ rotation = -0.588005
 offset = 1838.88
 
 [node name="SpawnTimer" type="Timer" parent="."]
-wait_time = 46.0
+wait_time = 18.0
 
 [node name="DeskSpots" type="Node" parent="."]
 
@@ -174,3 +608,7 @@ shape = SubResource( 10 )
 [connection signal="timeout" from="SpawnTimer" to="." method="_on_SpawnTimer_timeout"]
 [connection signal="body_entered" from="CustomerSummonZone" to="." method="_on_CustomerSummonZone_body_entered"]
 [connection signal="body_exited" from="CustomerSummonZone" to="." method="_on_CustomerSummonZone_body_exited"]
+
+[editable path="YSort/PaintShaker3"]
+[editable path="YSort/PaintShaker4"]
+[editable path="YSort/PaintShaker5"]

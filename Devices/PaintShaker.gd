@@ -5,12 +5,11 @@ onready var keyPressAnimator : AnimationPlayer = $KeyPressAnimator
 onready var paintCanPosition : Position2D = $PaintCanPosition
 onready var goodProgress : TextureProgress = $GoodProgress
 onready var badProgress : TextureProgress = $BadProgress
-onready var textureTimer : Timer = $TextureTimer
+onready var goodTimer : Timer = $GoodTimer
+onready var badTimer : Timer = $BadTimer
 onready var interactArea : Area2D = $InteractArea
 onready var shakingAnimation : AnimationPlayer = $ShakingAnimation
 
-signal playerNearEmptyShaker(body,this_node)
-signal playerNearLoadedShaker(body,this_node)
 signal playerFarFromShaker(body,this_node)
 
 var playersThatCanPress : Array = []
@@ -23,9 +22,6 @@ var _state : int = States.EMPTY
 func _ready():
 	keyPressSprite.visible = false
 
-func add_worker_to_nearby(worker_node : KinematicBody2D) -> void:
-	playersThatCanPress.append(worker_node)
-	update_key_press_sprite()
 
 func update_key_press_sprite() -> void:
 	if playersThatCanPress.size() > 0 and keyPressSprite.visible == false:
@@ -64,7 +60,7 @@ func start_texture_progress() -> void:
 	goodProgress.value = 0
 	badProgress.value = 0
 	goodProgress.visible = true
-	textureTimer.start()
+	goodTimer.start()
 
 func start_shaking_animation() -> void:
 	shakingAnimation.play("Shaking")
@@ -78,20 +74,40 @@ func turn_off_shaker() -> void:
 	badProgress.value = 0
 	goodProgress.visible = false
 	badProgress.visible = false
-	textureTimer.stop()
+	goodTimer.stop()
+	badTimer.stop()
+	currentPaintBucket = null
 
 func _on_InteractArea_body_entered(body):
 	if currentPaintBucket:
-		emit_signal("playerNearLoadedShaker",body,self)
+		if body._state == body.States.EMPTY_HANDS:
+			body.nearbyShaker.append(self)
+			if body.currentShakerNode:
+				if body.currentShakerNode != self:
+					body.currentShakerNode.playersThatCanPress.erase(body)
+					body.currentShakerNode.update_key_press_sprite()
+			body.currentShakerNode = self
+			body._state = body.States.CAN_USE_SHAKER
+			playersThatCanPress.append(body)
+			update_key_press_sprite()
 	else:
-		emit_signal("playerNearEmptyShaker",body,self)
+		if body._state == body.States.CLOSE_PAINT or body._state == body.States.CAN_USE_SHAKER:
+			print("Hey?")
+			if body.currentShakerNode:
+				if body.currentShakerNode != self:
+					body.currentShakerNode.playersThatCanPress.erase(body)
+					body.currentShakerNode.update_key_press_sprite()
+			body.currentShakerNode = self
+			body._state = body.States.CAN_USE_SHAKER
+			playersThatCanPress.append(body)
+			update_key_press_sprite()
 
 func _on_InteractArea_body_exited(body):
 	emit_signal("playerFarFromShaker",body,self)
 	playersThatCanPress.erase(body)
 	update_key_press_sprite()
 
-func _on_TextureTimer_timeout():
+func _on_GoodTimer_timeout():
 	if goodProgress.value < 100:
 		goodProgress.value += 1
 	elif badProgress.visible == false:
@@ -99,7 +115,10 @@ func _on_TextureTimer_timeout():
 		_state = States.COMPLETED #Paint Filled
 		currentPaintBucket.shaken = true
 		interactArea.monitoring = true #Workers can now grab paint.
-	elif badProgress.value < 100:
+		badTimer.start()
+
+func _on_BadTimer_timeout():
+	if badProgress.value < 100:
 		badProgress.value += 1
 	else:
-		pass #make bad stuff happen.
+		currentPaintBucket.tooShaken = true

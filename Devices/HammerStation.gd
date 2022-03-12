@@ -6,7 +6,7 @@ signal playerFarFromHammerStation(body,this_node)
 onready var paintCanPosition : Position2D = $PaintCanPosition
 
 var numberOfHits : int = 0
-var numberOfHitsNeeded : int = 4
+var numberOfHitsNeeded : int = 2
 
 var playersThatCanUse : Array = []
 

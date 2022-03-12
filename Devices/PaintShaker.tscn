@@ -251,8 +251,11 @@ texture_under = ExtResource( 4 )
 texture_progress = ExtResource( 6 )
 fill_mode = 4
 
-[node name="TextureTimer" type="Timer" parent="."]
-wait_time = 0.03
+[node name="GoodTimer" type="Timer" parent="."]
+wait_time = 0.25
+
+[node name="BadTimer" type="Timer" parent="."]
+wait_time = 0.08
 
 [node name="KeyPressSprite" type="Sprite" parent="."]
 position = Vector2( 15, -16 )
@@ -271,4 +274,5 @@ anims/Shaking = SubResource( 4 )
 
 [connection signal="body_entered" from="InteractArea" to="." method="_on_InteractArea_body_entered"]
 [connection signal="body_exited" from="InteractArea" to="." method="_on_InteractArea_body_exited"]
-[connection signal="timeout" from="TextureTimer" to="." method="_on_TextureTimer_timeout"]
+[connection signal="timeout" from="GoodTimer" to="." method="_on_GoodTimer_timeout"]
+[connection signal="timeout" from="BadTimer" to="." method="_on_BadTimer_timeout"]
